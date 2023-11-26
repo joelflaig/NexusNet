@@ -3,10 +3,10 @@
 alias E: Float32 = 2.71828174591064453125
 
 # defines relu activation function
-fn relu():
-    pass
+fn relu(borrowed x: Float32) -> Float32:
+    let val = x if x > 0 else x
+    return val
 
 # defines sigmoid activation function
 fn sigmoid(borrowed x: Float32) -> Float32:
-    let val: Float32 = 1/(1+(E**-x))
-    return val
+    return 1/(1+(E**-x))
