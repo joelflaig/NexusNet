@@ -7,6 +7,15 @@ fn relu(borrowed x: Float32) -> Float32:
     let val = x if x > 0 else x
     return val
 
+# defines elu activation function
+fn elu(borrowed a: Float32, borrowed x: Float32) -> Float32:
+    let val = x if x > 0 else a*(E**x-1)
+    return val
+
 # defines sigmoid activation function
 fn sigmoid(borrowed x: Float32) -> Float32:
-    return 1/(1+(E**-x))
+    return 1/(1+E**(-x))
+
+# defines tanh activation function
+fn tanh(borrowed z: Float32) -> Float32:
+    return (E**z-E**(-z))/(E**z+E**(-z))
