@@ -1,6 +1,0 @@
-# defines sigmoid activation function
-alias E: Float32 = 2.71828174591064453125
-
-fn sigmoid(borrowed x: Float32) -> Float32:
-    let val: Float32 = 1/(1+(E**-x))
-    return val

@@ -1,4 +1,0 @@
-# defines the relu activation function
-
-fn relu():
-    pass
