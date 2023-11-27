@@ -4,8 +4,13 @@ alias E: Float32 = 2.71828174591064453125
 
 # defines relu activation function
 fn relu(borrowed x: Float32) -> Float32:
-    let val = x if x > 0 else x
+    let val = x if x > 0 else 0
     return val
+
+# defines leakyrelu activation function
+# fn leakyrelu(borrowed a: Float32, borrowed x: Float32) -> Float32:
+#     let val: Float32 = a*x
+#     return val
 
 # defines elu activation function
 fn elu(borrowed a: Float32, borrowed x: Float32) -> Float32:
