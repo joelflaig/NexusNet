@@ -1,0 +1,13 @@
+# defines vector struct
+from python import Python
+
+struct Vector:
+
+    var contents: DynamicVector[Float32]
+
+    fn __init__(inout self, content: ListLiteral):
+        for i in range(len(content)):
+            pass
+
+    fn __copyinit__(inout self, other: Self):
+        self.contents = other.contents

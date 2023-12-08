@@ -1,4 +1,19 @@
 # defines the neuron struct
-from vector import Vector
+from python import Python
 
 struct Neuron:
+    var input: DynamicVector[Float32]
+    var weights: DynamicVector[Float32]
+    var bias: Float32
+    var value: Float32
+    var activation: String
+
+    def __init__(inout self):
+        self.input = DynamicVector[Float32]()
+        self.weights = DynamicVector[Float32]()
+        self.bias = Float32()
+        self.value = Float32()
+        self.activation = String('')
+
+fn main() raises:
+    pass
