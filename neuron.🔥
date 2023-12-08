@@ -1,6 +1,4 @@
 # defines the neuron struct
-from vector import vector
+from vector import Vector
 
 struct Neuron:
-
-
