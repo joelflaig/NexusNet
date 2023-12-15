@@ -1,13 +1,22 @@
 # defines vector struct
-from python import Python
+from random import random_float64
+from random import seed
 
-struct Vector:
+fn randvec(len: Int) -> DynamicVector[Float64]:
+    seed()
+    var vec: DynamicVector[Float64] = DynamicVector[Float64]()
+    for i in range(len):
+        vec.append(random_float64())
+    return vec
 
-    var contents: DynamicVector[Float32]
+fn logvec(vec: DynamicVector[Float64], part: Int = -1):
+        print(String(vec[part]))
+        var v = vec
+        _ = v.pop_back()
+        logvec(v, part-1)
 
-    fn __init__(inout self, content: ListLiteral):
-        for i in range(len(content)):
-            pass
-
-    fn __copyinit__(inout self, other: Self):
-        self.contents = other.contents
+fn logvec(vec: DynamicVector[Float32], part: Int = -1):
+        print(String(vec[part]))
+        var v = vec
+        _ = v.pop_back()
+        logvec(v, part-1)

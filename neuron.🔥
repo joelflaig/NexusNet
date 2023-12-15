@@ -1,19 +1,43 @@
-# defines the neuron struct
+# defines the Neuron trait and NormCell struct conforming to the Neuron trait
 from python import Python
+import vec
+import activations as act
+from random import random_float64
 
-struct Neuron:
+trait Neuron:
+
+    fn __init__(inout self, input: DynamicVector[Float32], activation: Int16):
+        ...
+    
+    fn eval(inout self) -> Float32:
+        ...
+
+struct NormCell(Neuron):
+    
     var input: DynamicVector[Float32]
-    var weights: DynamicVector[Float32]
-    var bias: Float32
+    var weights: DynamicVector[Float64]
+    var bias: Float64
     var value: Float32
-    var activation: String
+    var activation: Int16
 
-    def __init__(inout self):
-        self.input = DynamicVector[Float32]()
-        self.weights = DynamicVector[Float32]()
-        self.bias = Float32()
-        self.value = Float32()
-        self.activation = String('')
+    fn __init__(inout self, input: DynamicVector[Float32], activation: Int16):
+        self.value = Float32(0)
+        self.input = input
+        self.activation = activation
+        self.weights = vec.randvec(len(input))
+        self.bias = -(random_float64(1, 50))
+
+    fn eval(inout self) -> Float32:
+        if self.activation == act.RELU:
+            pass
+        elif self.activation == act.LRELU:
+            pass
+        elif self.activation == act.ELU:
+            pass
+        elif self.activation == act.SIG:
+            pass
+        elif self.activation == act.TANH:
+            pass
 
 fn main() raises:
     pass

@@ -1,26 +1,63 @@
 # defines activation functions, and a few constants
+from vec import logvec
 
 alias E: Float32 = 2.71828174591064453125
+
+# defines function for summing up two vectors
+fn sigma(a: DynamicVector[Float32], b: DynamicVector[Float32]) -> DynamicVector[Float32]:
+    var vec = DynamicVector[Float32]()
+    vec.reserve(len(a))
+    for i in range(len(a)):
+        vec[i] = a[i]+b[i]
+    return vec
 
 # defines relu activation function
 fn relu(borrowed x: Float32) -> Float32:
     let val = x if x > 0 else 0
     return val
 
+alias RELU: Int16 = 0
+
 # defines leakyrelu activation function
-# fn leakyrelu(borrowed a: Float32, borrowed x: Float32) -> Float32:
-#     let val: Float32 = a*x
-#     return val
+fn leakyrelu(borrowed a: Float32, borrowed x: Float32) -> Float32:
+    let val: Float32 = x if x > 0 else a*x
+    return val
+
+alias LRELU: Int16 = 1
 
 # defines elu activation function
 fn elu(borrowed a: Float32, borrowed x: Float32) -> Float32:
     let val = x if x > 0 else a*(E**x-1)
     return val
 
+alias ELU: Int16 = 2
+
 # defines sigmoid activation function
 fn sigmoid(borrowed x: Float32) -> Float32:
     return 1/(1+E**(-x))
 
+alias SIG: Int16 = 3
+
 # defines tanh activation function
 fn tanh(borrowed z: Float32) -> Float32:
     return (E**z-E**(-z))/(E**z+E**(-z))
+
+alias TANH: Int16 = 4
+
+fn main():
+    var a = DynamicVector[Float32]()
+    var b = DynamicVector[Float32]()
+    a.append(0.4634)
+    a.append(0.485)
+    a.append(0.134)
+
+    b.append(0.3245)
+    b.append(0.45)
+    b.append(0.13)
+    let c = sigma(a, b)
+    print(a[0])
+    print(b[0])
+    print(c[0])
+    # logvec(a)
+    # logvec(b)
+    # logvec(c)
