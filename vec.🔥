@@ -9,14 +9,10 @@ fn randvec(len: Int) -> DynamicVector[Float64]:
         vec.append(random_float64())
     return vec
 
-fn logvec(vec: DynamicVector[Float64], part: Int = -1):
-        print(String(vec[part]))
-        var v = vec
-        _ = v.pop_back()
-        logvec(v, part-1)
+fn logvec(vec: DynamicVector[Float64]):
+        for i in range(len(vec)):
+            print(vec[i])
 
 fn logvec(vec: DynamicVector[Float32], part: Int = -1):
-        print(String(vec[part]))
-        var v = vec
-        _ = v.pop_back()
-        logvec(v, part-1)
+        for i in range(len(vec)):
+            print(vec[i])

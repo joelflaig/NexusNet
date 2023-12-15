@@ -79,4 +79,5 @@ fn main():
     vec.append(Float32(3.245))
     vec.append(Float32(1.4545))
     vec.append(Float32(8.25))
-    logvec(relu(vec))
+    vec.append(Float32(0.1))
+    logvec(sigmoid(vec))
