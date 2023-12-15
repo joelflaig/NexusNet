@@ -16,12 +16,24 @@ fn relu(borrowed x: Float32) -> Float32:
     let val = x if x > 0 else 0
     return val
 
+fn relu(borrowed x: DynamicVector[Float32]) -> DynamicVector[Float32]:
+    var vec = DynamicVector[Float32]()
+    for i in range(len(x)):
+        vec.append(relu(x[i]))
+    return vec
+
 alias RELU: Int16 = 0
 
 # defines leakyrelu activation function
 fn leakyrelu(borrowed a: Float32, borrowed x: Float32) -> Float32:
     let val: Float32 = x if x > 0 else a*x
     return val
+
+fn leakyrelu(borrowed x: DynamicVector[Float32], borrowed a: Float32) -> DynamicVector[Float32]:
+    var vec = DynamicVector[Float32]()
+    for i in range(len(x)):
+        vec.append(leakyrelu(a, x[i]))
+    return vec
 
 alias LRELU: Int16 = 1
 
@@ -30,11 +42,23 @@ fn elu(borrowed a: Float32, borrowed x: Float32) -> Float32:
     let val = x if x > 0 else a*(E**x-1)
     return val
 
+fn elu(borrowed x: DynamicVector[Float32], borrowed a: Float32) -> DynamicVector[Float32]:
+    var vec = DynamicVector[Float32]()
+    for i in range(len(x)):
+        vec.append(elu(a, x[i]))
+    return vec
+
 alias ELU: Int16 = 2
 
 # defines sigmoid activation function
 fn sigmoid(borrowed x: Float32) -> Float32:
     return 1/(1+E**(-x))
+
+fn sigmoid(borrowed x: DynamicVector[Float32]) -> DynamicVector[Float32]:
+    var vec = DynamicVector[Float32]()
+    for i in range(len(x)):
+        vec.append(sigmoid(x[i]))
+    return vec
 
 alias SIG: Int16 = 3
 
@@ -42,22 +66,17 @@ alias SIG: Int16 = 3
 fn tanh(borrowed z: Float32) -> Float32:
     return (E**z-E**(-z))/(E**z+E**(-z))
 
+fn tanh(borrowed x: DynamicVector[Float32]) -> DynamicVector[Float32]:
+    var vec = DynamicVector[Float32]()
+    for i in range(len(x)):
+        vec.append(tanh(x[i]))
+    return vec
+
 alias TANH: Int16 = 4
 
 fn main():
-    var a = DynamicVector[Float32]()
-    var b = DynamicVector[Float32]()
-    a.append(0.4634)
-    a.append(0.485)
-    a.append(0.134)
-
-    b.append(0.3245)
-    b.append(0.45)
-    b.append(0.13)
-    let c = sigma(a, b)
-    print(a[0])
-    print(b[0])
-    print(c[0])
-    # logvec(a)
-    # logvec(b)
-    # logvec(c)
+    var vec = DynamicVector[Float32]()
+    vec.append(Float32(3.245))
+    vec.append(Float32(1.4545))
+    vec.append(Float32(8.25))
+    logvec(relu(vec))
