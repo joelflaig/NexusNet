@@ -3,14 +3,6 @@ from vec import logvec
 
 alias E: Float32 = 2.71828174591064453125
 
-# defines function for summing up two vectors
-fn sigma(a: DynamicVector[Float32], b: DynamicVector[Float32]) -> DynamicVector[Float32]:
-    var vec = DynamicVector[Float32]()
-    vec.reserve(len(a))
-    for i in range(len(a)):
-        vec[i] = a[i]+b[i]
-    return vec
-
 # defines relu activation function
 fn relu(borrowed x: Float32) -> Float32:
     let val = x if x > 0 else 0

@@ -2,6 +2,14 @@
 from random import random_float64
 from random import seed
 
+# defines function for summing up two vectors
+fn sigma(a: DynamicVector[Float32], b: DynamicVector[Float32]) -> DynamicVector[Float32]:
+    var vec = DynamicVector[Float32]()
+    vec.reserve(len(a))
+    for i in range(len(a)):
+        vec[i] = a[i]+b[i]
+    return vec
+
 fn randvec(len: Int) -> DynamicVector[Float64]:
     seed()
     var vec: DynamicVector[Float64] = DynamicVector[Float64]()
