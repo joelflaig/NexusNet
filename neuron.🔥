@@ -9,7 +9,7 @@ trait Neuron:
     fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
         ...
     
-    fn eval(inout self):
+    fn eval(inout self, a: Float64 = 0):
         ...
 
 struct NormCell(Neuron):
@@ -27,17 +27,44 @@ struct NormCell(Neuron):
         self.weights = vec.randvec(len(input))
         self.bias = -(random_float64(1, 50))
 
-    fn eval(inout self, a: Float32 = 0):
+    fn eval(inout self, a: Float64 = 0):
         if self.activation == act.RELU:
             self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
         elif self.activation == act.LRELU:
             self.value = act.leakyrelu(a, vec.wsum(self.input, self.weights) + self.bias)
         elif self.activation == act.ELU:
-            self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
+            self.value = act.elu(a, vec.wsum(self.input, self.weights) + self.bias)
         elif self.activation == act.SIG:
-            self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
+            self.value = act.sigmoid(vec.wsum(self.input, self.weights) + self.bias)
         elif self.activation == act.TANH:
+            self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
+
+struct ConvCell(Neuron):
+
+    var input: DynamicVector[Float64]
+    var weights: DynamicVector[Float64]
+    var bias: Float64
+    var value: Float64
+    var activation: Int16    
+    
+    fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
+        self.value = Float64(0)
+        self.input = input
+        self.activation = activation
+        self.weights = vec.randvec(len(input))
+        self.bias = -(random_float64(1, 50))
+
+    fn eval(inout self, a: Float64 = 0):
+        if self.activation == act.RELU:
             self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
+        elif self.activation == act.LRELU:
+            self.value = act.leakyrelu(a, vec.wsum(self.input, self.weights) + self.bias)
+        elif self.activation == act.ELU:
+            self.value = act.elu(a, vec.wsum(self.input, self.weights) + self.bias)
+        elif self.activation == act.SIG:
+            self.value = act.sigmoid(vec.wsum(self.input, self.weights) + self.bias)
+        elif self.activation == act.TANH:
+            self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
 
 fn main() raises:
     pass
