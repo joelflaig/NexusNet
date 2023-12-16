@@ -1,4 +1,4 @@
-# defines vector struct
+# defines vector manipulation functions
 from random import random_float64
 from random import seed
 
@@ -15,6 +15,7 @@ fn wsum(v: DynamicVector[Float64], b: DynamicVector[Float64]) -> Float64:
 
     return val
 
+# defines function for generating random vectors with Float64 values
 fn randvec(len: Int) -> DynamicVector[Float64]:
     seed()
     var vec: DynamicVector[Float64] = DynamicVector[Float64]()
@@ -22,10 +23,7 @@ fn randvec(len: Int) -> DynamicVector[Float64]:
         vec.append(random_float64())
     return vec
 
+# defines function to log a vector to the console
 fn logvec(vec: DynamicVector[Float64]):
-        for i in range(len(vec)):
-            print(vec[i])
-
-fn logvec(vec: DynamicVector[Float64], part: Int = -1):
         for i in range(len(vec)):
             print(vec[i])

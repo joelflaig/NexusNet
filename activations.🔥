@@ -1,6 +1,4 @@
-# defines activation functions, and a few constants
-from vec import logvec
-
+# defines activation functions, enums and a few constants
 alias E: Float64 = 2.71828174591064453125
 
 # defines relu activation function

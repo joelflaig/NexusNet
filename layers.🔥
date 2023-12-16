@@ -1,0 +1,6 @@
+# defines layer trait and structs conforming to it
+
+# Layer trait
+trait Layer:
+    fn __init__(inout self):
+        ...

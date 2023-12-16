@@ -1,9 +1,10 @@
-# defines the Neuron trait and NormCell struct conforming to the Neuron trait
+# defines the Neuron trait and structs conforming to the Neuron trait
 from python import Python
 import vec
 import activations as act
 from random import random_float64
 
+# Neuron trait
 trait Neuron:
 
     fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
@@ -12,6 +13,7 @@ trait Neuron:
     fn eval(inout self, a: Float64 = 0):
         ...
 
+# Normcell struct conforming to Neuron trait
 struct NormCell(Neuron):
     
     var input: DynamicVector[Float64]
@@ -39,6 +41,7 @@ struct NormCell(Neuron):
         elif self.activation == act.TANH:
             self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
 
+# ConvCell struct conforming to Neuron trait
 struct ConvCell(Neuron):
 
     var input: DynamicVector[Float64]
@@ -65,6 +68,3 @@ struct ConvCell(Neuron):
             self.value = act.sigmoid(vec.wsum(self.input, self.weights) + self.bias)
         elif self.activation == act.TANH:
             self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
-
-fn main() raises:
-    pass
