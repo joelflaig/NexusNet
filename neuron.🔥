@@ -6,38 +6,38 @@ from random import random_float64
 
 trait Neuron:
 
-    fn __init__(inout self, input: DynamicVector[Float32], activation: Int16):
+    fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
         ...
     
-    fn eval(inout self) -> Float32:
+    fn eval(inout self):
         ...
 
 struct NormCell(Neuron):
     
-    var input: DynamicVector[Float32]
+    var input: DynamicVector[Float64]
     var weights: DynamicVector[Float64]
     var bias: Float64
-    var value: Float32
+    var value: Float64
     var activation: Int16
 
-    fn __init__(inout self, input: DynamicVector[Float32], activation: Int16):
-        self.value = Float32(0)
+    fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
+        self.value = Float64(0)
         self.input = input
         self.activation = activation
         self.weights = vec.randvec(len(input))
         self.bias = -(random_float64(1, 50))
 
-    fn eval(inout self) -> Float32:
+    fn eval(inout self, a: Float32 = 0):
         if self.activation == act.RELU:
-            pass
+            self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
         elif self.activation == act.LRELU:
-            pass
+            self.value = act.leakyrelu(a, vec.wsum(self.input, self.weights) + self.bias)
         elif self.activation == act.ELU:
-            pass
+            self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
         elif self.activation == act.SIG:
-            pass
+            self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
         elif self.activation == act.TANH:
-            pass
+            self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
 
 fn main() raises:
     pass

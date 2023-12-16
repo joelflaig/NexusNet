@@ -3,12 +3,17 @@ from random import random_float64
 from random import seed
 
 # defines function for summing up two vectors
-fn sigma(a: DynamicVector[Float32], b: DynamicVector[Float32]) -> DynamicVector[Float32]:
-    var vec = DynamicVector[Float32]()
-    vec.reserve(len(a))
-    for i in range(len(a)):
-        vec[i] = a[i]+b[i]
-    return vec
+fn wsum(v: DynamicVector[Float64], b: DynamicVector[Float64]) -> Float64:
+    var vec = DynamicVector[Float64]()
+    var val: Float64 = 0.0
+
+    for i in range(len(v)):
+        vec.append(v[i]*b[i])
+    
+    for i in range(len(v)):
+        val += vec[i]
+
+    return val
 
 fn randvec(len: Int) -> DynamicVector[Float64]:
     seed()
@@ -21,6 +26,6 @@ fn logvec(vec: DynamicVector[Float64]):
         for i in range(len(vec)):
             print(vec[i])
 
-fn logvec(vec: DynamicVector[Float32], part: Int = -1):
+fn logvec(vec: DynamicVector[Float64], part: Int = -1):
         for i in range(len(vec)):
             print(vec[i])
