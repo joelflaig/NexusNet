@@ -1,6 +1,30 @@
 # defines layer trait and structs conforming to it
+from neuron import NormCell, Neuron
+from tensor import Tensor, TensorShape, TensorSpec
 
 # Layer trait
 trait Layer:
-    fn __init__(inout self):
-        ...
+  fn __init__(inout self, neurons: Int, prec_layer: Layer):
+    ...
+    
+  fn __getitem__(inout self, owned key: Int) -> NormCell:
+    ...
+
+  fn eval(inout self):
+    ...
+
+struct Dense(Layer):
+
+  var neurons: DynamicVector[NormCell]
+
+  fn __init__(inout self, neurons: Int, prec_layer: Layer):
+    self.neurons = DynamicVector[NormCell]
+    for i in range(neurons):
+      self.neurons.append(NormCell())
+    
+  fn __getitem__(inout self, owned key: Int) -> NormCell:
+    let k = key
+    return self.neurons[key]
+
+  fn eval(inout self):
+    pass

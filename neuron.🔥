@@ -5,66 +5,109 @@ import activations as act
 from random import random_float64
 
 # Neuron trait
-trait Neuron:
+trait Neuron(CollectionElement):
 
-    fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
-        ...
+  fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
+    ...
     
-    fn eval(inout self, a: Float64 = 0):
-        ...
+  fn __copyinit__(inout self, borrowed other: Self):
+    ...
+    
+  fn __moveinit__(inout self, owned other: Self):
+    ...
+
+  fn eval(inout self, a: Float64 = 0):
+    ...
+    
+  fn render_weights(inout self):
+    ...
 
 # Normcell struct conforming to Neuron trait
 struct NormCell(Neuron):
     
-    var input: DynamicVector[Float64]
-    var weights: DynamicVector[Float64]
-    var bias: Float64
-    var value: Float64
-    var activation: Int16
+  var input: DynamicVector[Float64]
+  var weights: DynamicVector[Float64]
+  var bias: Float64
+  var value: Float64
+  var activation: Int16
 
-    fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
-        self.value = Float64(0)
-        self.input = input
-        self.activation = activation
-        self.weights = vec.randvec(len(input))
-        self.bias = -(random_float64(1, 50))
+  fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
+    self.value = Float64(0)
+    self.input = input
+    self.activation = activation
+    self.weights = vec.randvec(len(input))
+    self.bias = -(random_float64(1, 50))
+  
+  fn __moveinit__(inout self, owned other: Self):
+    self.input = other.input
+    self.weights = other.weights
+    self.bias = other.bias
+    self.value = other.value
+    self.activation = other.activation
 
-    fn eval(inout self, a: Float64 = 0):
-        if self.activation == act.RELU:
-            self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
-        elif self.activation == act.LRELU:
-            self.value = act.leakyrelu(a, vec.wsum(self.input, self.weights) + self.bias)
-        elif self.activation == act.ELU:
-            self.value = act.elu(a, vec.wsum(self.input, self.weights) + self.bias)
-        elif self.activation == act.SIG:
-            self.value = act.sigmoid(vec.wsum(self.input, self.weights) + self.bias)
-        elif self.activation == act.TANH:
-            self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.input = other.input
+    self.weights = other.weights
+    self.bias = other.bias
+    self.value = other.value
+    self.activation = other.activation
+
+  fn eval(inout self, a: Float64 = 0):
+    if self.activation == act.RELU:
+      self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
+    elif self.activation == act.LRELU:
+      self.value = act.leakyrelu(a, vec.wsum(self.input, self.weights) + self.bias)
+    elif self.activation == act.ELU:
+      self.value = act.elu(a, vec.wsum(self.input, self.weights) + self.bias)
+    elif self.activation == act.SIG:
+      self.value = act.sigmoid(vec.wsum(self.input, self.weights) + self.bias)
+    elif self.activation == act.TANH:
+      self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
+
+  fn render_weights(inout self):
+      pass
 
 # ConvCell struct conforming to Neuron trait
 struct ConvCell(Neuron):
 
-    var input: DynamicVector[Float64]
-    var weights: DynamicVector[Float64]
-    var bias: Float64
-    var value: Float64
-    var activation: Int16    
+  var input: DynamicVector[Float64]
+  var weights: DynamicVector[Float64]
+  var bias: Float64
+  var value: Float64
+  var activation: Int16    
     
-    fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
-        self.value = Float64(0)
-        self.input = input
-        self.activation = activation
-        self.weights = vec.randvec(len(input))
-        self.bias = -(random_float64(1, 50))
+  fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
+    self.value = Float64(0)
+    self.input = input
+    self.activation = activation
+    self.weights = vec.randvec(len(input))
+    self.bias = -(random_float64(1, 50))
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.input = other.input
+    self.weights = other.weights
+    self.bias = other.bias
+    self.value = other.value
+    self.activation = other.activation
+    
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.input = other.input
+    self.weights = other.weights
+    self.bias = other.bias
+    self.value = other.value
+    self.activation = other.activation
 
-    fn eval(inout self, a: Float64 = 0):
-        if self.activation == act.RELU:
-            self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
-        elif self.activation == act.LRELU:
-            self.value = act.leakyrelu(a, vec.wsum(self.input, self.weights) + self.bias)
-        elif self.activation == act.ELU:
-            self.value = act.elu(a, vec.wsum(self.input, self.weights) + self.bias)
-        elif self.activation == act.SIG:
-            self.value = act.sigmoid(vec.wsum(self.input, self.weights) + self.bias)
-        elif self.activation == act.TANH:
-            self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
+  fn eval(inout self, a: Float64 = 0):
+    if self.activation == act.RELU:
+      self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
+    elif self.activation == act.LRELU:
+      self.value = act.leakyrelu(a, vec.wsum(self.input, self.weights) + self.bias)
+    elif self.activation == act.ELU:
+      self.value = act.elu(a, vec.wsum(self.input, self.weights) + self.bias)
+    elif self.activation == act.SIG:
+      self.value = act.sigmoid(vec.wsum(self.input, self.weights) + self.bias)
+    elif self.activation == act.TANH:
+      self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
+    
+  fn render_weights(inout self):
+    pass
