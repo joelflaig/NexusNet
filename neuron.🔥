@@ -7,9 +7,6 @@ from random import random_float64
 # Neuron trait
 trait Neuron(CollectionElement):
 
-  fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
-    ...
-    
   fn __copyinit__(inout self, borrowed other: Self):
     ...
     
@@ -17,6 +14,9 @@ trait Neuron(CollectionElement):
     ...
 
   fn eval(inout self, a: Float64 = 0):
+    ...
+
+  fn fit(inout self):
     ...
     
   fn render_weights(inout self):
@@ -64,8 +64,11 @@ struct NormCell(Neuron):
     elif self.activation == act.TANH:
       self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
 
+  fn fit(inout self):
+    pass
+
   fn render_weights(inout self):
-      pass
+    pass
 
 # ConvCell struct conforming to Neuron trait
 struct ConvCell(Neuron):
@@ -76,11 +79,11 @@ struct ConvCell(Neuron):
   var value: Float64
   var activation: Int16    
     
-  fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
+  fn __init__(inout self, input: DynamicVector[Float64], weight: DynamicVector[Float64], bias: Float64, activation: Int16):
     self.value = Float64(0)
     self.input = input
     self.activation = activation
-    self.weights = vec.randvec(len(input))
+    self.weights = weight
     self.bias = -(random_float64(1, 50))
     
   fn __moveinit__(inout self, owned other: Self):
@@ -108,6 +111,13 @@ struct ConvCell(Neuron):
       self.value = act.sigmoid(vec.wsum(self.input, self.weights) + self.bias)
     elif self.activation == act.TANH:
       self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
-    
+  
+  fn fit(inout self):
+    pass 
+
+  fn reweight(inout self, weights: DynamicVector[Float64], bias: Float64):
+    self.weights = weights
+    self.bias = bias
+
   fn render_weights(inout self):
     pass

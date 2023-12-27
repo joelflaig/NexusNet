@@ -1,0 +1,20 @@
+# defines the model trait and structs conforming to it
+import layers as layer
+
+trait Model:
+  
+  fn __init__(inout self):
+    ...
+
+  fn add(inout self, lyr: layers.Layer):
+    ...
+
+struct Sequential(Model):
+
+  var lyrs: DynamicVector[layer.Layer]
+
+  fn __init__(inout self):
+    self.lyrs = DynamicVector[layers.Layer]()
+  
+  fn add(inout self, lyr: layers.Layer):
+    pass
