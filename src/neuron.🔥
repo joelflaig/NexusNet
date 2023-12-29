@@ -1,7 +1,7 @@
 # defines the Neuron trait and structs conforming to the Neuron trait
 from python import Python
-import vec
-import activations as act
+import Neural.vec
+import Neural.activations as act
 from random import random_float64
 
 # Neuron trait

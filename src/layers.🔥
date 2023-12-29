@@ -1,7 +1,9 @@
 # defines layer trait and structs conforming to it
-import activations as act
-from neuron import NormCell, Neuron
+import Neural.activations as act
+from Neural.neuron import NormCell, Neuron
 from tensor import Tensor, TensorShape, TensorSpec
+
+alias int = DType.int64
 
 # Layer trait
 trait Layer(CollectionElement):
@@ -11,7 +13,7 @@ trait Layer(CollectionElement):
   Neural Network layers.
   """
   
-  fn __getitem__(inout self, owned key: Int) -> NormCell:
+  fn __init__(inout self):
     ...
 
   fn __copyinit__(inout self, borrowed other: Self):
@@ -30,14 +32,19 @@ struct Input(Layer):
   
   fn __init__(inout self):
     pass
+  
   fn __getitem__(inout self, owned key: Int) -> NormCell:
     pass
+  
   fn __copyinit__(inout self, borrowed other: Self):
     pass
+  
   fn __moveinit__(inout self, owned other: Self):
     pass
+  
   fn out(inout self: Self) -> DynamicVector[Float64]:
     pass
+  
   fn eval(inout self, a: Float64 = 0):
     pass
 
@@ -45,32 +52,66 @@ struct Output(Layer):
   
   fn __init__(inout self):
     pass
+  
   fn __getitem__(inout self, owned key: Int) -> NormCell:
     pass
+  
   fn __copyinit__(inout self, borrowed other: Self):
     pass
+  
   fn __moveinit__(inout self, owned other: Self):
     pass
+  
   fn out(inout self: Self) -> DynamicVector[Float64]:
     pass
+  
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct Flatten(Layer):
+
+  fn __init__(inout self):
+    pass
+  
+  fn __getitem__(inout self, owned key: Int) -> NormCell:
+    pass
+  
+  fn __copyinit__(inout self, borrowed other: Self):
+    pass
+  
+  fn __moveinit__(inout self, owned other: Self):
+    pass
+  
+  fn out(inout self: Self) -> DynamicVector[Float64]:
+    pass
+  
   fn eval(inout self, a: Float64 = 0):
     pass
 
 struct Dense(Layer):
 
   var in_layer: Layer
-  var neurons: DynamicVector[NormCell]
+  var neurons:Int 
   var activation: Int16
+  var weights: DynamicVector[Float64]
+  var bias: Float64
+  var values: DynamicVector[Float64]
 
+  fn __init__(inout self):
+
+    self.in_layer = Layer()
+    self.neurons = -1
+    self.activation = -1
+    self.weights = DynamicVector[Float64]
+    self.bias = 0
+    self.values = DynamicVector[Float64]
+  
   fn __init__(inout self, neurons: Int, prec_layer: Layer, act: Int16):
     self.in_layer = prec_layer
-    self.neurons = DynamicVector[NormCell]()
+    self.neurons = neurons
     self.activation = act
-    for i in range(neurons):
-      self.neurons.append(NormCell(self.in_layer.out(), self.activation))
-    
+
   fn __getitem__(inout self, owned key: Int) -> NormCell:
-    let k = key
     return self.neurons[key]
 
   fn __copyinit__(inout self, borrowed other: Self):
@@ -93,3 +134,29 @@ struct Dense(Layer):
   fn eval(inout self, a: Float64 = 0):
     for n in range(len(self.neurons)):
       self.neurons[n].eval(a)
+
+struct Conv2D(Layer):
+  
+  var neurons: Int
+  var weights: DynamicVector[Float64]
+  var activations: Int16
+  var bias: Float64
+  var values: DynamicVector[Float64]
+
+  fn __init__(inout self):
+    pass
+   
+  fn __getitem__(inout self, owned key: Int) -> NormCell:
+    pass
+  
+  fn __copyinit__(inout self, borrowed other: Self):
+    pass
+  
+  fn __moveinit__(inout self, owned other: Self):
+    pass
+  
+  fn out(inout self: Self) -> DynamicVector[Float64]:
+    pass
+  
+  fn eval(inout self, a: Float64 = 0):
+    pass
