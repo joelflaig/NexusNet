@@ -1,0 +1,313 @@
+# defines sensory neurons for the digital creatures
+from Neural.neuron import Neuron#, Cell
+
+trait InNeuron(Neuron):
+  
+  fn __init__(inout self):
+    ...
+
+  fn getdata(inout self):
+    ...
+
+struct InPD(InNeuron):
+  
+  '''
+  Detects the Pheromone 
+  Density in the vicinity 
+  of the creature.
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InNWD(InNeuron):
+  
+  '''
+  Detects the distance 
+  to the west wall of the map.
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InEWD(InNeuron):
+  
+  '''
+  
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InSWD(InNeuron):
+  
+  '''
+  
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InWWD(InNeuron):
+  
+  '''
+  
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InCD(InNeuron):
+  
+  '''
+  
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InCS(InNeuron):
+  
+  '''
+  Detects how many creatures 
+  are south to the creature.
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InCN(InNeuron):
+  
+  '''
+  
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InCW(InNeuron):
+  
+  '''
+  
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InCE(InNeuron):
+  
+  '''
+  
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct In_T(InNeuron):
+  
+  '''
+  
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InPos_X(InNeuron):
+  
+  '''
+  
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
+
+struct InPos_Y(InNeuron):
+  
+  '''
+  
+  '''
+
+  var value: Float64
+
+  fn __init__(inout self):
+    self.value = 0
+
+  fn getdata(inout self):
+    self.eval()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.value = other.value
+    
+  fn __moveinit__(inout self, owned other: Self):
+    self.value = other.value
+
+  fn eval(inout self, a: Float64 = 0):
+    pass
