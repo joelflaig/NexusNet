@@ -3,6 +3,10 @@ from Neural.neuron import Neuron#, Cell
 
 trait InNeuron(Neuron):
   
+  '''
+  Simple trait for input cells.
+  '''
+
   fn __init__(inout self):
     ...
 
@@ -38,7 +42,7 @@ struct InNWD(InNeuron):
   
   '''
   Detects the distance 
-  to the west wall of the map.
+  to the north wall of the map.
   '''
 
   var value: Float64
@@ -61,7 +65,8 @@ struct InNWD(InNeuron):
 struct InEWD(InNeuron):
   
   '''
-  
+  Detects the distance 
+  to the east wall of the map.
   '''
 
   var value: Float64
@@ -84,7 +89,8 @@ struct InEWD(InNeuron):
 struct InSWD(InNeuron):
   
   '''
-  
+  Detects the distance 
+  to the south wall of the map.
   '''
 
   var value: Float64
@@ -107,7 +113,8 @@ struct InSWD(InNeuron):
 struct InWWD(InNeuron):
   
   '''
-  
+  Detects the distance 
+  to the west wall of the map.
   '''
 
   var value: Float64
@@ -130,7 +137,7 @@ struct InWWD(InNeuron):
 struct InCD(InNeuron):
   
   '''
-  
+  Detects the local creature density.
   '''
 
   var value: Float64
@@ -177,7 +184,8 @@ struct InCS(InNeuron):
 struct InCN(InNeuron):
   
   '''
-  
+  Detects how many creatures 
+  are north to the creature.
   '''
 
   var value: Float64
@@ -200,7 +208,8 @@ struct InCN(InNeuron):
 struct InCW(InNeuron):
   
   '''
-  
+  Detects how many creatures 
+  are west to the creature.
   '''
 
   var value: Float64
@@ -223,7 +232,8 @@ struct InCW(InNeuron):
 struct InCE(InNeuron):
   
   '''
-  
+  Detects how many creatures 
+  are east to the creature.
   '''
 
   var value: Float64
@@ -246,7 +256,7 @@ struct InCE(InNeuron):
 struct In_T(InNeuron):
   
   '''
-  
+  Returns for how many ticks the simulation has been running.
   '''
 
   var value: Float64
@@ -269,7 +279,7 @@ struct In_T(InNeuron):
 struct InPos_X(InNeuron):
   
   '''
-  
+  Returns the position of the creature along the X axis.
   '''
 
   var value: Float64
@@ -292,7 +302,7 @@ struct InPos_X(InNeuron):
 struct InPos_Y(InNeuron):
   
   '''
-  
+  Returns the position of the creature along the Y axis.
   '''
 
   var value: Float64
