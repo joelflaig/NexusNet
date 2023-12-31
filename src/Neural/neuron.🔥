@@ -1,7 +1,5 @@
 # defines the Neuron trait and structs conforming to the Neuron trait
 from python import Python
-import Neural.vec
-import Neural.activations as act
 from random import random_float64
 
 '''
@@ -19,13 +17,16 @@ trait Neuron(CollectionElement):
   to programm own Neuron structs and classes.
   '''
 
+  fn __init__(inout self):
+    ...
+
   fn __copyinit__(inout self, borrowed other: Self):
     ...
     
   fn __moveinit__(inout self, owned other: Self):
     ...
 
-  fn eval(inout self, a: Float64 = 0):
+  fn eval(inout self):
     ...
 
 # Normcell struct conforming to Neuron trait
@@ -42,11 +43,19 @@ struct Cell(Neuron):
   var value: Float64
   var activation: Int16
 
+  fn  __init__(inout self):
+    self.value = 0
+    self.input = DynamicVector[Float64]()
+    self.activation = -1
+    self.weights = DynamicVector[Float64]()
+    self.bias = 0
+
+
   fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
-    self.value = Float64(0)
+    self.value = 0
     self.input = input
     self.activation = activation
-    self.weights = vec.randvec(len(input))
+    self.weights = DynamicVector[Float64]()
     self.bias = -(random_float64(1, 50))
   
   fn __moveinit__(inout self, owned other: Self):
@@ -63,17 +72,8 @@ struct Cell(Neuron):
     self.value = other.value
     self.activation = other.activation
 
-  fn eval(inout self, a: Float64 = 0):
-    if self.activation == act.RELU:
-      self.value = act.relu(vec.wsum(self.input, self.weights) + self.bias)
-    elif self.activation == act.LRELU:
-      self.value = act.leakyrelu(a, vec.wsum(self.input, self.weights) + self.bias)
-    elif self.activation == act.ELU:
-      self.value = act.elu(a, vec.wsum(self.input, self.weights) + self.bias)
-    elif self.activation == act.SIG:
-      self.value = act.sigmoid(vec.wsum(self.input, self.weights) + self.bias)
-    elif self.activation == act.TANH:
-      self.value = act.tanh(vec.wsum(self.input, self.weights) + self.bias)
+  fn eval(inout self):
+    pass
 
   fn fit(inout self):
     pass
