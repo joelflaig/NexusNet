@@ -10,7 +10,13 @@ trait InNeuron(Neuron):
   fn __init__(inout self):
     ...
 
-  fn getdata(inout self):
+  fn add_output(inout self, n: Neuron):
+    ...
+
+  async fn getdata(inout self):
+    ...
+
+  async fn eval_outs(inout self):
     ...
 
 struct InPD(InNeuron):
@@ -22,12 +28,13 @@ struct InPD(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -35,8 +42,17 @@ struct InPD(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InNWD(InNeuron):
   
@@ -46,12 +62,13 @@ struct InNWD(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -59,8 +76,17 @@ struct InNWD(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InEWD(InNeuron):
   
@@ -70,12 +96,13 @@ struct InEWD(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -83,8 +110,17 @@ struct InEWD(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InSWD(InNeuron):
   
@@ -94,12 +130,13 @@ struct InSWD(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -107,8 +144,17 @@ struct InSWD(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InWWD(InNeuron):
   
@@ -118,12 +164,13 @@ struct InWWD(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -131,8 +178,17 @@ struct InWWD(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InCD(InNeuron):
   
@@ -141,12 +197,13 @@ struct InCD(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -154,8 +211,17 @@ struct InCD(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InCS(InNeuron):
   
@@ -165,12 +231,13 @@ struct InCS(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -178,23 +245,33 @@ struct InCS(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InCN(InNeuron):
-  
+
   '''
   Detects how many creatures 
   are north to the creature.
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -202,8 +279,17 @@ struct InCN(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InCW(InNeuron):
   
@@ -213,12 +299,13 @@ struct InCW(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -226,8 +313,17 @@ struct InCW(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InCE(InNeuron):
   
@@ -237,12 +333,13 @@ struct InCE(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -250,8 +347,17 @@ struct InCE(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct In_T(InNeuron):
   
@@ -260,12 +366,13 @@ struct In_T(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -273,8 +380,17 @@ struct In_T(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InPos_X(InNeuron):
   
@@ -283,12 +399,13 @@ struct InPos_X(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -296,8 +413,17 @@ struct InPos_X(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
 
 struct InPos_Y(InNeuron):
   
@@ -306,12 +432,13 @@ struct InPos_Y(InNeuron):
   '''
 
   var value: Float64
+  var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
     self.value = 0
 
-  fn getdata(inout self):
-    self.eval()
+  async fn getdata(inout self):
+    pass
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -319,5 +446,14 @@ struct InPos_Y(InNeuron):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn add_output(inout self, n: Neuron):
+    self.outputs.append(n)
+
+  fn eval(inout self):
+    self.getdata()
+
+  async fn eval_outs(inout self):
+    for n in range(len(self.outputs)):
+      self.outputs[n].eval()
+    del n
+    return
