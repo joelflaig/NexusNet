@@ -28,46 +28,6 @@ trait Layer(CollectionElement):
   fn eval(inout self, a: Float64 = 0):
     ...
 
-struct Input(Layer):
-  
-  fn __init__(inout self):
-    pass
-  
-  fn __getitem__(inout self, owned key: Int) -> NormCell:
-    pass
-  
-  fn __copyinit__(inout self, borrowed other: Self):
-    pass
-  
-  fn __moveinit__(inout self, owned other: Self):
-    pass
-  
-  fn out(inout self: Self) -> DynamicVector[Float64]:
-    pass
-  
-  fn eval(inout self, a: Float64 = 0):
-    pass
-
-struct Output(Layer):
-  
-  fn __init__(inout self):
-    pass
-  
-  fn __getitem__(inout self, owned key: Int) -> NormCell:
-    pass
-  
-  fn __copyinit__(inout self, borrowed other: Self):
-    pass
-  
-  fn __moveinit__(inout self, owned other: Self):
-    pass
-  
-  fn out(inout self: Self) -> DynamicVector[Float64]:
-    pass
-  
-  fn eval(inout self, a: Float64 = 0):
-    pass
-
 struct Flatten(Layer):
 
   fn __init__(inout self):
