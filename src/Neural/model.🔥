@@ -1,23 +1,32 @@
 # defines the model trait and structs conforming to it
-import Neural.layers as layer
+import Neural.layers as layers
 
 trait Model:
   
-  fn __init__(inout self):
+  fn __init__(inout self, *lyrs: layers.Layer):
     ...
 
-  fn add(inout self, lyr: layers.Layer):
+  fn compile(inout self):
+    ...
+
+  fn eval(inout self):
+    ...
+
+  fn fit(inout self):
     ...
 
 struct Sequential(Model):
 
-  var lyrs: DynamicVector[layer.Layer]
+  var lyrs: VariadicList[layers.Layer]
 
-  fn __init__(inout self):
-    self.lyrs = DynamicVector[layer.Layer]()
+  fn __init__(inout self, *lyrs: layers.Layer):
+    self.lyrs = *lyrs
   
-  fn add(inout self, lyr: layer.Layer):
-    self.lyrs.append(lyr)
+  fn compile(inout self):
+    pass
 
-fn main():
-  pass
+  fn eval(inout self):
+    pass
+
+  fn fit(inout self):
+    pass
