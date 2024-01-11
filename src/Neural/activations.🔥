@@ -63,4 +63,3 @@ fn tanh(borrowed x: DynamicVector[Float64]) -> DynamicVector[Float64]:
   return vec
 
 alias TANH: Int16 = 4
-

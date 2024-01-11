@@ -24,24 +24,30 @@ trait Layer(CollectionElement):
   fn out(inout self: Self) -> Tensor[float]:
     ...
 
-  fn eval(inout self, a: Float64 = 0):
+  fn eval(inout self, a: Float64 = 0) raises:
     ...
 
 struct Flatten(Layer):
 
+  var in_layer: Layer
+  var value: Tensor[float]
+
   fn __init__(inout self):
-    pass
+    self.in_layer = Layer()
+    self.value = Tensor[float]()
   
   fn __copyinit__(inout self, borrowed other: Self):
-    pass
+    self.in_layer = other.in_layer
+    self.value = other.value
   
   fn __moveinit__(inout self, owned other: Self):
-    pass
+    self.in_layer = other.in_layer
+    self.value = other.value
   
   fn out(inout self: Self) -> Tensor[float]:
-    pass
+    return self.value
   
-  fn eval(inout self, a: Float64 = 0):
+  fn eval(inout self, a: Float64 = 0) raises:
     pass
 
 struct Dense(Layer):
@@ -50,7 +56,7 @@ struct Dense(Layer):
   var neurons: Int 
   var activation: Int16
   var weights: Tensor[float]
-  var bias: Float64
+  var biases: Tensor[float]
   var values: Tensor[float]
 
   fn __init__(inout self):
@@ -59,7 +65,7 @@ struct Dense(Layer):
     self.neurons = -1
     self.activation = -1
     self.weights = Tensor[float]()
-    self.bias = 0
+    self.biases = Tensor[float]()
     self.values = Tensor[float]()
   
   fn __init__(inout self, neurons: Int, prec_layer: Layer, act: Int16):
@@ -74,7 +80,7 @@ struct Dense(Layer):
     self.neurons = other.neurons
     self.activation = other.activation
     self.weights = other.weights
-    self.bias = other.bias
+    self.biases = other.biases
     self.values = other.values
 
   fn __moveinit__(inout self, owned other: Self):
@@ -82,14 +88,14 @@ struct Dense(Layer):
     self.neurons = other.neurons
     self.activation = other.activation
     self.weights = other.weights
-    self.bias = other.bias
+    self.biases = other.biases
     self.values = other.values
 
   fn out(inout self: Self) -> Tensor[float]:
     return self.values
 
-  fn eval(inout self, a: Float64 = 0):
-    pass
+  fn eval(inout self, a: Float64 = 0) raises:
+    self.values = self.values * self.weights + self.biases
 
 struct Conv2D(Layer):
   
@@ -135,5 +141,5 @@ struct Conv2D(Layer):
   fn out(inout self: Self) -> Tensor[float]:
     return self.values
 
-  fn eval(inout self, a: Float64 = 0):
+  fn eval(inout self, a: Float64 = 0) raises:
     pass
