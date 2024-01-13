@@ -10,7 +10,11 @@ struct Vector:
   var data: Tensor[float]
   var size: Int
 
-  fn __init__[size: Int](inout self):
+  fn __init__(inout self) raises:
+    self.size = 0
+    self.data = Tensor[float]()
+
+  fn __init__(inout self, size: Int) raises:
     self.size = size
     self.data = Tensor[float](size)
 
@@ -20,8 +24,8 @@ struct Vector:
     self.data = data
     self.size = data.shape()[0]
 
-  fn __mul__(borrowed self, vec: Vector) raises-> Vector:
-    return self.data * vec.data
+  fn __mul__(borrowed self, vec: Vector) raises-> Float64:
+    return (self.data * vec.data)[0]
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.data = other.data
@@ -39,37 +43,64 @@ struct Vector:
       )
     self.data.simd_store(-1, data)
 
+  # defines function for generating random vectors with Float64 values
+  fn randvec(inout self, len: Int) raises:
+    self.data = Tensor[float](len)
+    seed()
+    for i in range(len):
+      self.data.simd_store[1](i, random_float64())
+
 struct Matrix:
 
   var data: Tensor[float]
+
+  fn __init__(inout self) raises:
+    self.data = Tensor[float]()
 
   fn __init__(inout self, data: Tensor[float]) raises:
     if data.rank() != 2:
       raise Error("Unable to convert given data to a matrix due to rank mismatch")
     self.data = data
 
-  # defines function for weightsum
+  # defines function for matrix-vector multiplication
   fn __mul__(borrowed self, vec: Vector) raises-> Vector:
     if vec.data.dim(0) != self.data.dim(1):
       raise Error("Cannot multiply due to dimension mismatch")
+
     var val = Vector(Tensor[float](self.data.dim(0)))
+
     for i in range(self.data.dim(0)):
-      val.data[i] = (vec * Vector(self.data.clip(self.data.dim(0)*i, self.data.dim(0)*(i+1)-1))).data[0]
+      # multiplies input vector with rows of matrix
+      val.data[i] = vec * 
+        Vector(
+          # returns the i-th row of the matrix as Tensor value
+          self.data.clip(
+            self.data.dim(1)*i, 
+            self.data.dim(1)*(i+1)-1
+          )
+        )
+    
     return val
 
   # defines function for weightsum
   fn __rmul__(borrowed self, vec: Vector) raises-> Vector:
     return self.__mul__(vec)
 
-# defines function for generating random vectors with Float64 values
-fn randvec(len: Int) -> DynamicVector[Float64]:
-  seed()
-  var vec: DynamicVector[Float64] = DynamicVector[Float64]()
-  for i in range(len):
-    vec.append(random_float64())
-  return vec
-
-# defines function to log a vector to the console
-fn logvec(vec: DynamicVector[Float64]):
-  for i in range(len(vec)):
-    print(vec[i])
+  # defines function for generating random vectors with Float64 values
+  fn random_matrix(inout self, dim_a: Int, dim_b: Int) raises:
+    
+    self.data = self.data.reshape(
+      TensorShape(
+        dim_a,
+        dim_b
+        )
+      )
+    
+    seed()
+    
+    for i in range(dim_a):
+      for j in range(dim_b):
+        self.data.simd_store[1](
+          VariadicList(i, j), 
+          random_float64()
+          )

@@ -1,6 +1,7 @@
 # defines layer trait and structs conforming to it
 import Neural.activations as act
 from tensor import Tensor, TensorShape, TensorSpec
+from Neural.tensorex import Vector, Matrix
 
 alias float: DType = DType.float64
 
@@ -30,11 +31,11 @@ trait Layer(CollectionElement):
 struct Flatten(Layer):
 
   var in_layer: Layer
-  var value: Tensor[float]
+  var value: Vector
 
-  fn __init__(inout self):
+  fn __init__(inout self) raises:
     self.in_layer = Layer()
-    self.value = Tensor[float]()
+    self.value = Vector()
   
   fn __copyinit__(inout self, borrowed other: Self):
     self.in_layer = other.in_layer
@@ -44,7 +45,7 @@ struct Flatten(Layer):
     self.in_layer = other.in_layer
     self.value = other.value
   
-  fn out(inout self: Self) -> Tensor[float]:
+  fn out(inout self: Self) -> Vector:
     return self.value
   
   fn eval(inout self, a: Float64 = 0) raises:
@@ -55,20 +56,20 @@ struct Dense(Layer):
   var in_layer: Layer
   var neurons: Int 
   var activation: Int16
-  var weights: Tensor[float]
-  var biases: Tensor[float]
-  var values: Tensor[float]
+  var weights: Matrix
+  var biases: Vector
+  var values: Vector
 
-  fn __init__(inout self):
+  fn __init__(inout self) raises:
 
     self.in_layer = Layer()
     self.neurons = -1
     self.activation = -1
-    self.weights = Tensor[float]()
-    self.biases = Tensor[float]()
-    self.values = Tensor[float]()
+    self.weights = Matrix()
+    self.biases = Vector()
+    self.values = Vector()
   
-  fn __init__(inout self, neurons: Int, prec_layer: Layer, act: Int16):
+  fn __init__(inout self, neurons: Int, prec_layer: Layer, act: Int16) raises:
     
     self.__init__()
     self.in_layer = prec_layer
