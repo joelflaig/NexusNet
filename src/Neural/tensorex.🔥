@@ -5,35 +5,66 @@ from tensor import TensorShape
 
 alias float: DType = DType.float64
 
-struct Vector:
+struct Vector(Sized):
   
   var data: Tensor[float]
   var size: Int
+  var _offset: Int
 
   fn __init__(inout self) raises:
     self.size = 0
+    self._offset = 0
     self.data = Tensor[float]()
 
   fn __init__(inout self, size: Int) raises:
     self.size = size
+    self._offset = 0
     self.data = Tensor[float](size)
 
   fn __init__(inout self, data: Tensor[float]) raises:
     if data.rank() != 1:
       raise Error("Unable to convert given data to a vector due to rank mismatch")
     self.data = data
-    self.size = data.shape()[0]
-
-  fn __mul__(borrowed self, vec: Vector) raises-> Float64:
-    return (self.data * vec.data)[0]
+    self._offset = 0
+    self.size = data.dim(0)
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.data = other.data
+    self._offset = other._offset
     self.size = other.size
 
   fn __moveinit__(inout self, owned other: Self):
     self.data = other.data
+    self._offset = other._offset
     self.size = other.size
+
+  fn __getitem__(self, index: Int) -> Float64:
+    return self.data[index]
+
+  fn __len__(self) -> Int:
+    return self.size
+
+  fn __iter__(inout self) raises -> Vector:
+    return self.data
+
+  fn __next__(inout self) raises -> Float64:
+    if self._offset >= self.size:
+      raise Error("Index out of range of vector")
+    self._offset += 1
+    return self.data[self._offset]
+
+  fn __mul__(borrowed self, vec: Vector) raises -> Float64:
+    return (self.data * vec.data)[0]
+
+  fn __add__(self, vec: Vector) raises -> Vector:
+    if  vec.data.dim(0) != self.data.dim(0):
+      raise Error("Unable to add vectors due to dimension mismatch")
+    var val = Vector()
+    for i in range(self.data.dim(0)):
+      val.append(
+        self.data[i] + vec.data[i]
+      )
+    return val
 
   fn append(inout self, data: Float64) raises:
     self.data = self.data.reshape(
@@ -53,14 +84,30 @@ struct Vector:
 struct Matrix:
 
   var data: Tensor[float]
+  var dim_0: Int
+  var dim_1: Int
 
   fn __init__(inout self) raises:
     self.data = Tensor[float]()
+    self.dim_0 = 0
+    self.dim_1 = 0
 
   fn __init__(inout self, data: Tensor[float]) raises:
     if data.rank() != 2:
       raise Error("Unable to convert given data to a matrix due to rank mismatch")
     self.data = data
+    self.dim_0 = data.dim(0)
+    self.dim_1 = data.dim(1)
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.data = other.data
+    self.dim_0 = other.dim_0
+    self.dim_1 = other.dim_1
+
+  fn __moveinit__(inout self, owned other: Self):
+    self.data = other.data
+    self.dim_0 = other.dim_0
+    self.dim_1 = other.dim_1
 
   # defines function for matrix-vector multiplication
   fn __mul__(borrowed self, vec: Vector) raises-> Vector:

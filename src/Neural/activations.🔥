@@ -1,4 +1,5 @@
 # defines activation functions, enums and a few constants
+from Neural.tensorex import Matrix, Vector
 alias E: Float64 = 2.71828174591064453125
 
 # defines relu activation function
@@ -6,9 +7,9 @@ fn relu(borrowed x: Float64) -> Float64:
   let val = x if x > 0 else 0
   return val
 
-fn relu(borrowed x: DynamicVector[Float64]) -> DynamicVector[Float64]:
+fn relu(borrowed x: Vector) -> DynamicVector[Float64]:
   var vec = DynamicVector[Float64]()
-  for i in range(len(x)):
+  for i in range(len[Vector](x)):
     vec.append(relu(x[i]))
   return vec
 

@@ -13,7 +13,7 @@ trait Layer(CollectionElement):
   Neural Network layers.
   """
   
-  fn __init__(inout self):
+  fn __init__(inout self) raises:
     ...
 
   fn __copyinit__(inout self, borrowed other: Self):
@@ -22,7 +22,7 @@ trait Layer(CollectionElement):
   fn __moveinit__(inout self, owned other: Self):
     ...
 
-  fn out(inout self: Self) -> Tensor[float]:
+  fn out(inout self: Self) -> Vector:
     ...
 
   fn eval(inout self, a: Float64 = 0) raises:
@@ -85,29 +85,29 @@ struct Dense(Layer):
     self.values = other.values
 
   fn __moveinit__(inout self, owned other: Self):
-    self.in_layer = other.in_layer
-    self.neurons = other.neurons
-    self.activation = other.activation
-    self.weights = other.weights
-    self.biases = other.biases
-    self.values = other.values
+    self.in_layer = other.in_layer^
+    self.neurons = other.neurons^
+    self.activation = other.activation^
+    self.weights = other.weights^
+    self.biases = other.biases^
+    self.values = other.values^
 
-  fn out(inout self: Self) -> Tensor[float]:
+  fn out(inout self: Self) -> Vector:
     return self.values
 
   fn eval(inout self, a: Float64 = 0) raises:
-    self.values = self.values * self.weights + self.biases
+    self.values = self.in_layer.out() * self.weights + self.biases
 
 struct Conv2D(Layer):
   
   var in_layer: Layer
   var neurons: Int 
   var activation: Int16
-  var weights: Tensor[float]
-  var bias: Float64
-  var values: Tensor[float]
+  var weights: Vector
+  var bias: Int
+  var values: Vector
 
-  fn __init__(inout self):
+  fn __init__(inout self) raises:
 
     self.in_layer = Layer()
     self.neurons = -1
@@ -116,7 +116,7 @@ struct Conv2D(Layer):
     self.bias = 0
     self.values = Tensor[float]()
   
-  fn __init__(inout self, neurons: Int, prec_layer: Layer, act: Int16):
+  fn __init__(inout self, neurons: Int, prec_layer: Layer, act: Int16) raises:
     
     self.__init__()
     self.in_layer = prec_layer
@@ -132,14 +132,14 @@ struct Conv2D(Layer):
     self.values = other.values
 
   fn __moveinit__(inout self, owned other: Self):
-    self.in_layer = other.in_layer
-    self.neurons = other.neurons
-    self.activation = other.activation
-    self.weights = other.weights
-    self.bias = other.bias
-    self.values = other.values
+    self.in_layer = other.in_layer^
+    self.neurons = other.neurons^
+    self.activation = other.activation^
+    self.weights = other.weights^
+    self.bias = other.bias^
+    self.values = other.values^
 
-  fn out(inout self: Self) -> Tensor[float]:
+  fn out(inout self: Self) -> Vector:
     return self.values
 
   fn eval(inout self, a: Float64 = 0) raises:
