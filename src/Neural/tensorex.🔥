@@ -44,7 +44,7 @@ struct Vector(Sized):
   fn __len__(self) -> Int:
     return self.size
 
-  fn __iter__(inout self) raises -> Vector:
+  fn __iter__(self) raises -> Vector:
     return self.data
 
   fn __next__(inout self) raises -> Float64:
@@ -151,3 +151,13 @@ struct Matrix:
           VariadicList(i, j), 
           random_float64()
           )
+
+# might produce errors due to __iter__ method
+fn vector_applicable(func: fn(Float64) -> Float64) -> fn(Vector) raises capturing -> Vector:
+  fn vecfunc(vec: Vector) raises -> Vector:
+    var val = Vector()
+    for i in vec:
+      val.append(func(i))
+    return val
+    
+  return vecfunc

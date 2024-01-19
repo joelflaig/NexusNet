@@ -85,12 +85,12 @@ struct Dense(Layer):
     self.values = other.values
 
   fn __moveinit__(inout self, owned other: Self):
-    self.in_layer = other.in_layer^
-    self.neurons = other.neurons^
-    self.activation = other.activation^
-    self.weights = other.weights^
-    self.biases = other.biases^
-    self.values = other.values^
+    self.in_layer = other.in_layer
+    self.neurons = other.neurons
+    self.activation = other.activation
+    self.weights = other.weights
+    self.biases = other.biases
+    self.values = other.values
 
   fn out(inout self: Self) -> Vector:
     return self.values
@@ -132,15 +132,18 @@ struct Conv2D(Layer):
     self.values = other.values
 
   fn __moveinit__(inout self, owned other: Self):
-    self.in_layer = other.in_layer^
-    self.neurons = other.neurons^
-    self.activation = other.activation^
-    self.weights = other.weights^
-    self.bias = other.bias^
-    self.values = other.values^
+    self.in_layer = other.in_layer
+    self.neurons = other.neurons
+    self.activation = other.activation
+    self.weights = other.weights
+    self.bias = other.bias
+    self.values = other.values
 
   fn out(inout self: Self) -> Vector:
     return self.values
 
   fn eval(inout self, a: Float64 = 0) raises:
     pass
+
+fn main():
+  pass

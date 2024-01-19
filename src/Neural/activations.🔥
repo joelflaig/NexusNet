@@ -7,10 +7,12 @@ fn relu(borrowed x: Float64) -> Float64:
   let val = x if x > 0 else 0
   return val
 
-fn relu(borrowed x: Vector) -> DynamicVector[Float64]:
-  var vec = DynamicVector[Float64]()
+fn relu(borrowed x: Vector) -> Vector:
+  var vec = Vector
   for i in range(len[Vector](x)):
-    vec.append(relu(x[i]))
+    vec.append(
+      relu(x[i])
+      )
   return vec
 
 alias RELU: Int16 = 0
