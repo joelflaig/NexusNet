@@ -1,68 +1,51 @@
 # defines activation functions, enums and a few constants
-from Neural.tensorex import Matrix, Vector
+from Neural.tensorwrap import Matrix, Vector
 alias E: Float64 = 2.71828174591064453125
 
 # defines relu activation function
+@always_inline
 fn relu(borrowed x: Float64) -> Float64:
   let val = x if x > 0 else 0
   return val
 
-fn relu(borrowed x: Vector) -> Vector:
-  var vec = Vector
-  for i in range(len[Vector](x)):
-    vec.append(
-      relu(x[i])
-      )
-  return vec
+alias vrelu = Vector.vector_applicable(relu)
 
 alias RELU: Int16 = 0
 
 # defines leakyrelu activation function
+@always_inline
 fn leakyrelu(borrowed a: Float64, borrowed x: Float64) -> Float64:
   let val: Float64 = x if x > 0 else a*x
   return val
 
-fn leakyrelu(borrowed x: DynamicVector[Float64], borrowed a: Float64) -> DynamicVector[Float64]:
-  var vec = DynamicVector[Float64]()
-  for i in range(len(x)):
-    vec.append(leakyrelu(a, x[i]))
-  return vec
+alias vlrelu = Vector.vector_applicable(leakyrelu)
 
 alias LRELU: Int16 = 1
 
 # defines elu activation function
+@always_inline
 fn elu(borrowed a: Float64, borrowed x: Float64) -> Float64:
   let val = x if x > 0 else a*(E**x-1)
   return val
 
-fn elu(borrowed x: DynamicVector[Float64], borrowed a: Float64) -> DynamicVector[Float64]:
-  var vec = DynamicVector[Float64]()
-  for i in range(len(x)):
-    vec.append(elu(a, x[i]))
-  return vec
+alias velu = Vector.vector_applicable(elu)
 
 alias ELU: Int16 = 2
 
 # defines sigmoid activation function
+@always_inline
 fn sigmoid(borrowed x: Float64) -> Float64:
   return 1/(1+E**(-x))
 
-fn sigmoid(borrowed x: DynamicVector[Float64]) -> DynamicVector[Float64]:
-  var vec = DynamicVector[Float64]()
-  for i in range(len(x)):
-    vec.append(sigmoid(x[i]))
-  return vec
+alias vsig = Vector.vector_applicable(elu)
 
 alias SIG: Int16 = 3
 
 # defines tanh activation function
+@always_inline
 fn tanh(borrowed z: Float64) -> Float64:
   return (E**z-E**(-z))/(E**z+E**(-z))
 
-fn tanh(borrowed x: DynamicVector[Float64]) -> DynamicVector[Float64]:
-  var vec = DynamicVector[Float64]()
-  for i in range(len(x)):
-    vec.append(tanh(x[i]))
-  return vec
+alias vtanh = Vector.vector_applicable(elu)
 
 alias TANH: Int16 = 4
