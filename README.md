@@ -2,4 +2,4 @@ This is a simple object-oriented implementation, with examples, of neural networ
 🔥( [https://www.modular.com/max/mojo](https://www.modular.com/max/mojo) )🔥
 
 The Readme file will end here since I have no idea about markdown syntax, 
-but it is planned to extend the Readme in the future.  
+but it is planned to extend the Readme in the future.
