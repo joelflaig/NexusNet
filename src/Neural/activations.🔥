@@ -2,50 +2,53 @@
 from Neural.tensorwrap import Matrix, Vector
 alias E: Float64 = 2.71828174591064453125
 
+alias activation_fn = fn(borrowed x: Float64, borrowed a: Float64) -> Float64
+alias vec_activation_fn = fn(borrowed x: Vector, borrowed a: Float64) -> Vector
+
 # defines relu activation function
 @always_inline
-fn relu(borrowed x: Float64) -> Float64:
+fn float_relu(borrowed x: Float64, borrowed a: Float64 = 0) -> Float64:
   let val = x if x > 0 else 0
   return val
 
-alias vrelu = Vector.vector_applicable(relu)
+alias relu = Vector.vector_applicable(float_relu)
 
 alias RELU: Int16 = 0
 
 # defines leakyrelu activation function
 @always_inline
-fn leakyrelu(borrowed a: Float64, borrowed x: Float64) -> Float64:
+fn float_leakyrelu(borrowed x: Float64, borrowed a: Float64) -> Float64:
   let val: Float64 = x if x > 0 else a*x
   return val
 
-alias vlrelu = Vector.vector_applicable(leakyrelu)
+alias leakyrelu = Vector.vector_applicable(float_leakyrelu)
 
 alias LRELU: Int16 = 1
 
 # defines elu activation function
 @always_inline
-fn elu(borrowed a: Float64, borrowed x: Float64) -> Float64:
+fn float_elu(borrowed x: Float64, borrowed a: Float64) -> Float64:
   let val = x if x > 0 else a*(E**x-1)
   return val
 
-alias velu = Vector.vector_applicable(elu)
+alias elu = Vector.vector_applicable(float_elu)
 
 alias ELU: Int16 = 2
 
 # defines sigmoid activation function
 @always_inline
-fn sigmoid(borrowed x: Float64) -> Float64:
+fn float_sigmoid(borrowed x: Float64,borrowed a: Float64) -> Float64:
   return 1/(1+E**(-x))
 
-alias vsig = Vector.vector_applicable(elu)
+alias sigmoid = Vector.vector_applicable(float_sigmoid)
 
 alias SIG: Int16 = 3
 
 # defines tanh activation function
 @always_inline
-fn tanh(borrowed z: Float64) -> Float64:
-  return (E**z-E**(-z))/(E**z+E**(-z))
+fn float_tanh(borrowed x: Float64, borrowed a: Float64=0) -> Float64:
+  return (E**x-E**(-x))/(E**x+E**(-x))
 
-alias vtanh = Vector.vector_applicable(elu)
+alias tanh = Vector.vector_applicable(float_tanh)
 
 alias TANH: Int16 = 4

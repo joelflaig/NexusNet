@@ -1,11 +1,7 @@
-# defines the model trait and structs conforming to it
-import Neural.layers as layers
+# defines structs describing neural network models
+import Neural.layers as lyrs
 
 trait Model:
-  
-  fn __init__(inout self, *lyrs: layers.Layer):
-    ...
-
   fn compile(inout self):
     ...
 
@@ -15,13 +11,13 @@ trait Model:
   fn fit(inout self):
     ...
 
-struct Sequential(Model):
+struct Sequential():
 
-  var lyrs: VariadicList[layers.Layer]
+  var layers: Tuple[lyrs.Layer]
 
-  fn __init__(inout self, *lyrs: layers.Layer):
-    self.lyrs = *lyrs
-  
+  fn __init__(inout self, layers: Tuple[lyrs.Layer]):
+    self.layers = layers
+
   fn compile(inout self):
     pass
 

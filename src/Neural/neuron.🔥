@@ -1,5 +1,5 @@
 # defines the Neuron trait and structs conforming to the Neuron trait
-from python import Python
+from Neural.tensorwrap import Vector
 from random import random_float64
 
 '''
@@ -17,7 +17,7 @@ trait Neuron(CollectionElement):
   to programm own Neuron structs and classes.
   '''
 
-  fn __init__(inout self):
+  fn __init__(inout self) raises:
     ...
 
   fn __copyinit__(inout self, borrowed other: Self):
@@ -26,7 +26,7 @@ trait Neuron(CollectionElement):
   fn __moveinit__(inout self, owned other: Self):
     ...
 
-  fn eval(inout self):
+  fn eval(inout self) raises:
     ...
 
 # Normcell struct conforming to Neuron trait
@@ -37,26 +37,26 @@ struct Cell(Neuron):
   by own custom structs.
   '''
 
-  var input: DynamicVector[Float64]
-  var weights: DynamicVector[Float64]
+  var input: Vector
+  var weights: Vector
   var bias: Float64
   var value: Float64
   var activation: Int16
 
-  fn  __init__(inout self):
+  fn  __init__(inout self) raises:
     self.value = 0
-    self.input = DynamicVector[Float64]()
+    self.input = Vector()
     self.activation = -1
-    self.weights = DynamicVector[Float64]()
+    self.weights = Vector()
     self.bias = 0
 
 
-  fn __init__(inout self, input: DynamicVector[Float64], activation: Int16):
+  fn __init__(inout self, input: Vector, activation: Int16) raises:
     self.value = 0
     self.input = input
     self.activation = activation
-    self.weights = DynamicVector[Float64]()
-    self.bias = -(random_float64(1, 50))
+    self.weights = Vector(); self.weights.random_vector(len(input))
+    self.bias = random_float64()
   
   fn __moveinit__(inout self, owned other: Self):
     self.input = other.input
@@ -72,11 +72,5 @@ struct Cell(Neuron):
     self.value = other.value
     self.activation = other.activation
 
-  fn eval(inout self):
-    pass
-
-  fn fit(inout self):
-    pass
-
-  fn render_weights(inout self):
-    pass
+  fn eval(inout self) raises:
+    self.value = self.input * self.weights + self.bias
