@@ -1,5 +1,6 @@
 # defines the Neuron trait and structs conforming to the Neuron trait
-from Neural.tensorwrap import Vector
+import .activations as act
+from .datastruct import Vector
 from random import random_float64
 
 '''
@@ -26,7 +27,7 @@ trait Neuron(CollectionElement):
   fn __moveinit__(inout self, owned other: Self):
     ...
 
-  fn eval(inout self) raises:
+  fn eval(inout self, a: Float64 = 1) raises:
     ...
 
 # Normcell struct conforming to Neuron trait
@@ -41,17 +42,17 @@ struct Cell(Neuron):
   var weights: Vector
   var bias: Float64
   var value: Float64
-  var activation: Int16
+  var activation: act.activation_fn
 
   fn  __init__(inout self) raises:
     self.value = 0
     self.input = Vector()
-    self.activation = -1
+    self.activation = act.float_relu
     self.weights = Vector()
     self.bias = 0
 
 
-  fn __init__(inout self, input: Vector, activation: Int16) raises:
+  fn __init__(inout self, input: Vector, activation: act.activation_fn) raises:
     self.value = 0
     self.input = input
     self.activation = activation
@@ -72,5 +73,5 @@ struct Cell(Neuron):
     self.value = other.value
     self.activation = other.activation
 
-  fn eval(inout self) raises:
-    self.value = self.input * self.weights + self.bias
+  fn eval(inout self, a: Float64 = 1) raises:
+    self.value = self.activation(self.input * self.weights + self.bias, a)

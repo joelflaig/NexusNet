@@ -1,5 +1,5 @@
 # defines structs describing neural network models
-import Neural.layers as lyrs
+import .layers as lyrs
 
 trait Model:
   fn compile(inout self):

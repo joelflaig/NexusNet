@@ -1,16 +1,14 @@
 # defines layer trait and structs conforming to it
-import Neural.activations as act
-from Neural.tensorwrap import TensorWrapper, MDTensorWrapper, Vector, Matrix, VectorP
+import .activations as act
+from .datastruct import Vector, Matrix, Tensor3D, TensorWrapper, MDTensorWrapper
 
 alias float: DType = DType.float64
 
 # Layer trait
-trait Layer():
-
-  """
-  A trait implementing methods for
-  Neural Network layers.
-  """
+trait Layer(Copyable, Movable):
+  '''
+  A trait made for the programmers convenience.
+  '''
   
   fn __copyinit__(inout self, borrowed other: Self):
     ...
@@ -24,7 +22,7 @@ struct Flatten(Layer):
 
   var value: Vector
 
-  fn __init__(inout self, owned in_layer: Layer) raises:
+  fn __init__(inout self) raises:
     self.value = Vector()
   
   fn __copyinit__(inout self, borrowed other: Self):
@@ -33,7 +31,7 @@ struct Flatten(Layer):
   fn __moveinit__(inout self, owned other: Self):
     self.value = other.value
   
-  fn eval(inout self, input: TensorWrapper, a: Float64 = 0) raises:
+  fn eval(inout self, inout input: MDTensorWrapper, a: Float64 = 0) raises:
     pass
 
 struct Dense(Layer):
@@ -44,7 +42,7 @@ struct Dense(Layer):
   var biases: Vector
   var values: Vector
 
-  fn __init__(inout self, neurons: Int, owned prec_layer: Layer, act: act.vec_activation_fn) raises:
+  fn __init__(inout self, neurons: Int, act: act.vec_activation_fn) raises:
     
     self.neurons = neurons
     self.activation = act
@@ -67,38 +65,38 @@ struct Dense(Layer):
     self.values = other.values
 
   @always_inline
-  fn eval(inout self, input: Vector, a: Float64 = 0) raises:
-    self.values = self.activation(input * self.weights + self.biases, a)
+  fn eval(owned self, input: Vector, a: Float64 = 0) raises:
+    self.values = self.activation(self.biases + (input * self.weights)  , a)
 
 struct Conv2D(Layer):
   
-  var neurons: Int 
+  var features: Int 
   var activation: Int16
-  var weights: Matrix
-  var biases: Vector
-  var values: Vector
+  var kernels: Tensor3D
+  var biases: Tensor3D
+  var values: Tensor3D
 
-  fn __init__(inout self, neurons: Int, owned prec_layer: Layer, act: Int16) raises:
+  fn __init__(inout self, features: Int, owned prec_layer: Layer, act: Int16) raises:
     
-    self.neurons = neurons
+    self.features = features
     self.activation = act
-    self.weights = Matrix(); self.weights.random_matrix(neurons, 0)
-    self.biases = Vector(); self.biases.random_vector(neurons)
-    self.values = Vector()
+    self.kernels = Tensor3D(); # self.kernels.random_tensor3d(features, 0)
+    self.biases = Tensor3D(); # self.biases.random_tensor3D(features)
+    self.values = Tensor3D()
 
   fn __copyinit__(inout self, borrowed other: Self):
-    self.neurons = other.neurons
+    self.features = other.features
     self.activation = other.activation
-    self.weights = other.weights
+    self.kernels = other.kernels
     self.biases = other.biases
     self.values = other.values
 
   fn __moveinit__(inout self, owned other: Self):
-    self.neurons = other.neurons
+    self.features = other.features
     self.activation = other.activation
-    self.weights = other.weights
+    self.kernels = other.kernels
     self.biases = other.biases
     self.values = other.values
 
-  fn eval(inout self, input: Vector, a: Float64 = 0) raises:
+  fn eval(inout self, input: TensorWrapper, a: Float64 = 0) raises:
     pass
