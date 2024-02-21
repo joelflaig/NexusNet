@@ -1,0 +1,364 @@
+# replaces the datastruct library for the time being (https://github.com/Mathprogrammer5/Mojo-Datastruct), 
+# due to a mojo bug that does not allow one to import local packages into a custom package
+from tensor import TensorShape
+from random import seed, random_float64
+
+alias float = DType.float64
+
+# defines trait for wrappers around a "data" variable of "Tensor" type
+trait TensorWrapper:
+  '''
+  Tensorwrapper summarizes all types, 
+  that 'wrap' around a "data" Tensor.
+  '''
+
+  fn __init__(inout self) raises:
+    ...
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    ...
+	
+  fn __moveinit__(inout self, owned other: Self):
+    ...
+
+trait MDTensorWrapper(TensorWrapper):
+  
+  '''
+  TensorWrappers conforming to this trait have more than one Dimension 
+  and can be flattened out to a Vector.
+  '''
+  
+  fn flatten(inout self) raises -> Vector:
+    ...
+
+struct Vector(TensorWrapper, Sized):
+  '''Defines a wrapper to handle mathematical vectors.'''
+  
+  var data: Tensor[float]
+  var size: Int
+  var _offset: Int
+
+  fn __init__(inout self) raises:
+    self.size = 0
+    self._offset = 0
+    self.data = Tensor[float]()
+
+  fn __init__(inout self, owned size: Int) raises:
+    self.size = size
+    self._offset = 0
+    self.data = Tensor[float](size)
+
+  fn __init__(inout self, data: Tensor[float]) raises:
+    if data.rank() != 1:
+      raise Error("Unable to convert given data to a vector due to rank mismatch")
+    self.data = data
+    self._offset = 0
+    self.size = data.dim(0)
+
+  fn __del__(owned self):
+    self.data.__del__()
+    self.size.__del__()
+    self._offset.__del__()
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.data.__copyinit__(other.data)
+    self._offset = other._offset
+    self.size = other.size
+
+  fn __moveinit__(inout self, owned other: Self):
+    self.data.__moveinit__(other.data)
+    self._offset = other._offset
+    self.size = other.size
+
+  fn __getitem__(self, index: Int) -> Float64:
+    return self.data[index]
+
+  fn __len__(self) -> Int:
+    return self.size
+
+  fn __iter__(self) raises -> Vector:
+    return self.data
+
+  fn __next__(inout self) raises -> Float64:
+    if self._offset >= self.size:
+      raise Error("Index out of range of vector")
+    self._offset += 1
+    return self.data[self._offset]
+
+  @always_inline
+  fn __ipow__(inout self, exponent: Int) raises:
+    self.data.__ipow__(exponent)
+
+  @always_inline
+  fn __pow__(inout self, exponent: Int) raises -> Vector:
+    return Vector(self.data ** exponent)
+
+  @always_inline
+  fn __truediv__(inout self, scalar: Float64) raises -> Vector:
+    return Vector(self.data / scalar)
+
+  @always_inline
+  fn __rtruediv__(inout self, scalar: Float64) raises -> Vector:
+    return Vector(self.data / scalar)
+
+  @always_inline
+  fn __truediv__(inout self, vec: Vector) raises -> Vector:
+    if not self.dim_match(vec):
+      raise Error("Unable to divide by vector due to dimension mismatch")
+
+    return Vector(self.data / vec.data)
+
+  @always_inline
+  fn __rtruediv__(inout self, vec: Vector) raises -> Vector:
+    if not self.dim_match(vec):
+      raise Error("Unable to divide by vector due to dimension mismatch")
+    
+    return Vector(self.data / vec.data)
+
+  @always_inline
+  fn __mul__(inout self, vec: Vector) raises -> Float64:
+    if not self.dim_match(vec):
+      raise Error("Unable to multiply vectors due to dimension mismatch")
+
+    return (self.data * vec.data)[0]
+
+  @always_inline
+  fn __rmul__(inout self, vec: Vector) raises -> Float64:
+    return self.__mul__(vec)
+
+  @always_inline
+  fn __sub__(inout self, vec: Vector) raises -> Vector:
+    if not self.dim_match(vec):
+      raise Error("Unable to subtract vector due to dimension mismatch")
+    
+    return Vector(self.data - vec.data)
+
+  @always_inline
+  fn __rsub__(inout self, vec: Vector):
+    pass
+
+  @always_inline
+  fn __add__(inout self, vec: Vector) raises -> Vector:
+    if not self.dim_match(vec):
+      raise Error("Unable to add vectors due to dimension mismatch")
+    
+    return Vector(self.data + vec.data)
+
+  @always_inline
+  fn __eq__(self, vec: Vector) -> Bool:
+    if self.data != vec.data: return False
+    return True
+
+  @always_inline
+  fn __ne__(inout self, vec: Vector) -> Bool:
+    return not self.__eq__(vec)
+
+  @always_inline
+  fn dim_match(inout self, vec: Vector) -> Bool:
+    '''Checks wether the length of the vector matches the length of "self".'''
+    if vec.data.dim(0) != self.data.dim(0): return False
+    return True
+
+  fn append(inout self, data: Float64) raises:
+    self.data = self.data.reshape(
+      TensorShape(
+        self.data.shape().num_elements()+1
+        )
+      )
+    self.data.simd_store(-1, data)
+
+  fn sum(inout self) -> Float64:
+    var val: Float64 = 0
+    for i in range(self.data.dim(0)):
+      val += self.data[i]
+    return val
+
+  fn random_vector(inout self, len: Int) raises:
+    '''Defines function for generating random vectors with Float64 values.'''
+    self.data = Tensor[float](len)
+    seed()
+    for i in range(len):
+      self.data.simd_store[1](i, random_float64())
+
+  @staticmethod
+  fn vector_applicable(func: fn(Float64) -> Float64) -> fn(Vector) raises escaping -> Vector:
+    '''Takes a function and returns its equivalent for the Vector type.'''
+    @always_inline
+    fn vecfunc(vec: Vector) raises escaping -> Vector:
+      var val = Vector()
+      for i in vec:
+        val.append(func(i))
+      return val
+    
+    return vecfunc
+
+  @staticmethod
+  fn vector_applicable(func: fn(a:Float64, x:Float64) -> Float64) -> fn(a:Float64, vec:Vector) raises escaping -> Vector:
+    '''Takes a function with a parameter and returns it equivalent for the Vector type.'''
+    @always_inline
+    fn vecfunc(a:Float64, vec: Vector) raises -> Vector:
+      var val = Vector()
+      for i in vec:
+        val.append(func(a, i))
+      return val
+    
+    return vecfunc
+
+# defines an alias for pointers to the Vector type
+alias VectorP = Pointer[Vector]
+
+
+struct Matrix(MDTensorWrapper):
+  '''Defines a wrapper to handle mathematical matrices.'''
+
+  var data: Tensor[float]
+  var x: Int
+  var y: Int
+
+  fn __init__(inout self) raises:
+    self.data = Tensor[float]()
+    self.x = 0
+    self.y = 0
+
+  fn __init__(inout self, owned x: Int, owned y: Int):
+    self.x = x
+    self.y = y
+    self.data = Tensor[float](x, y)
+
+  fn __init__(inout self, owned data: Tensor[float]) raises:
+    if data.rank() != 2:
+      raise Error("Unable to convert given data to a matrix due to rank mismatch")
+    self.data = data
+    self.x = data.dim(0)
+    self.y = data.dim(1)
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.data = other.data
+    self.x = other.x
+    self.y = other.y
+
+  fn __moveinit__(inout self, owned other: Self):
+    self.data = other.data
+    self.x = other.x
+    self.y = other.y
+
+  @always_inline
+  fn __mul__(inout self, owned vec: Vector) raises-> Vector:
+    '''Defines function for matrix-vector multiplication.'''
+    if vec.data.dim(0) != self.data.dim(1):
+      raise Error("Cannot multiply due to dimension mismatch")
+
+    var val = Vector(self.data.dim(0))
+
+    for i in range(self.data.dim(0)):
+      # multiplies input vector with rows of matrix
+      val.data[i] = vec * 
+        Vector(
+          # returns the i-th row of the matrix as Tensor value
+          self.data.clip(
+            self.data.dim(1)*i, 
+            self.data.dim(1)*(i+1)-1
+          )
+        )
+    
+    return val
+
+  @always_inline
+  fn __rmul__(inout self, vec: Vector) raises-> Vector:
+    '''Defines function for matrix-vector multiplication.'''
+    return self.__mul__(vec)
+
+  fn flatten(inout self) raises -> Vector:
+    return Vector(
+      self.data.reshape(
+        TensorShape(
+          self.x * self.y
+          )
+        )
+      )
+
+  fn random_matrix(inout self, x: Int, y: Int) raises:
+    '''Defines function for generating random matrices with Float64 values.'''
+ 
+    self.data = Tensor[float](x, y)
+    
+    seed()
+    
+    for i in range(x):
+      for j in range(y):
+        self.data.simd_store[1](
+          VariadicList(i, j), 
+          random_float64()
+          )
+
+  @staticmethod
+  fn matrix_applicable(func: fn(Float64) -> Float64) -> fn(Matrix) raises escaping -> Matrix:
+    '''Takes a function with a parameter and returns it equivalent for the Matrix type.'''
+    @always_inline
+    fn matfunc(matrix: Matrix) raises escaping -> Matrix:
+      var val = Matrix(matrix.x, matrix.y)
+      for i in range(matrix.x):
+        for j in range(matrix.y):
+          
+          val.data.simd_store[1](
+            VariadicList(i, j), 
+            func(
+              matrix.data.simd_load[1](i, j)
+              )
+            )
+
+      return val
+    
+    return matfunc
+
+# defines an alias for pointers to the matrix type
+alias MatrixP = Pointer[Matrix]
+
+struct Tensor3D(MDTensorWrapper):
+  '''Defines a wrapper to handle mathematical 3-dimensional tensors.'''
+  
+  var x: Int
+  var y: Int
+  var z: Int
+  var data: Tensor[float]
+
+  fn __init__(inout self) raises:
+    self.data = Tensor[float]()
+    self.x = 0
+    self.y = 0
+    self.z = 0
+
+  fn __init__(inout self, owned x: Int, owned y: Int, owned z: Int):
+    self.x = x
+    self.y = y
+    self.z = z
+    self.data = Tensor[float](x,y,z)
+
+  fn __init__(inout self, owned data: Tensor[float]) raises:
+    
+    if data.rank() != 3:
+      raise Error("Unable to convert given data to a matrix due to rank mismatch")
+    self.data = data
+    self.x = data.dim(0)
+    self.y = data.dim(1)
+    self.z = data.dim(2)
+
+  fn __copyinit__(inout self, borrowed other: Self):
+    self.data = other.data
+    self.x = other.x
+    self.y = other.y
+    self.z = other.z
+
+  fn __moveinit__(inout self, owned other: Self):
+    self.data = other.data
+    self.x = other.x
+    self.y = other.y
+    self.z = other.z
+
+  fn flatten(inout self) raises -> Vector:
+    return Vector(self.data.reshape(TensorShape(self.x * self.y * self.z)))
+
+  fn random_tensor3d(inout self, owned x: Int, owned y: Int, owned z: Int):
+    pass
+
+alias Tensor3DP = Pointer[Tensor3D]
