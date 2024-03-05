@@ -27,7 +27,7 @@ struct InPD(InNeuron):
   of the creature.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -61,7 +61,7 @@ struct InNWD(InNeuron):
   to the north wall of the map.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -95,7 +95,7 @@ struct InEWD(InNeuron):
   to the east wall of the map.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -129,7 +129,7 @@ struct InSWD(InNeuron):
   to the south wall of the map.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -163,7 +163,7 @@ struct InWWD(InNeuron):
   to the west wall of the map.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -196,7 +196,7 @@ struct InCD(InNeuron):
   Detects the local creature density.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -230,7 +230,7 @@ struct InCS(InNeuron):
   are south to the creature.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -264,7 +264,7 @@ struct InCN(InNeuron):
   are north to the creature.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -298,7 +298,7 @@ struct InCW(InNeuron):
   are west to the creature.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -332,7 +332,7 @@ struct InCE(InNeuron):
   are east to the creature.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -365,7 +365,7 @@ struct In_T(InNeuron):
   Returns for how many ticks the simulation has been running.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -398,7 +398,7 @@ struct InPos_X(InNeuron):
   Returns the position of the creature along the X axis.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):
@@ -431,7 +431,7 @@ struct InPos_Y(InNeuron):
   Returns the position of the creature along the Y axis.
   '''
 
-  var value: Float64
+  var value: Float32
   var outputs: DynamicVector[Neuron]
 
   fn __init__(inout self):

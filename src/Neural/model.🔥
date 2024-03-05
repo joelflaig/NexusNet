@@ -2,9 +2,6 @@
 import .layers as lyrs
 
 trait Model:
-  fn compile(inout self):
-    ...
-
   fn eval(inout self):
     ...
 
@@ -18,11 +15,8 @@ struct Sequential():
   fn __init__(inout self, layers: Tuple[lyrs.Layer]):
     self.layers = layers
 
-  fn compile(inout self):
+  fn eval(inout self, activation_coefficient: Float32=1):
     pass
 
-  fn eval(inout self):
-    pass
-
-  fn fit(inout self):
+  fn fit(inout self, learning_rate: Float32):
     pass

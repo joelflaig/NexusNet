@@ -1,8 +1,8 @@
 # defines neurons with an input and output for the digital creatures
 from Neural.neuron import Neuron#, Cell
 from Neural.activations import sigmoid
-from Neural.tensorwrap import Vector
-from random import random_float64 as rf64
+from Neural.datastruct import MLVec, f32
+from random import rand
 
 trait IONeuron(Neuron):
 
@@ -15,18 +15,18 @@ trait IONeuron(Neuron):
 
 struct InternalNeuron(IONeuron):
 
-  var value: Float64
+  var value: Float32
   var inputs: Tuple[Neuron]
   var outputs: Tuple[Neuron]
-  var weights: Vector
-  var bias: Float64
+  var weights: MLVec
+  var bias: Float32
 
   fn __init__(inout self) raises:
     self.value = 0
     self.inputs = Tuple[Neuron](Neuron())
     self.outputs = Tuple[Neuron](Neuron())
-    self.weights = Vector()
-    self.bias = rf64(-4, 4)
+    self.weights = MLVec()
+    self.bias = rand[f32](1)[0]
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.value = other.value
@@ -42,7 +42,7 @@ struct InternalNeuron(IONeuron):
     self.weights = other.weights
     self.bias = other.bias
   
-  fn eval(inout self) raises:
+  fn eval(inout self, a: Float32 = 1) raises:
     pass
   
   async fn eval_outs(inout self):
