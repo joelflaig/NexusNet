@@ -1,14 +1,17 @@
 # defines activation functions and a few aliases
-from .datastruct import f32, MLVec
+from .DSA import *
+from .DSA.tensorfuncs import MLVecOps as MLVO
+from .DSA.tensorfuncs import MLMatrixOps as MLMO
+from .DSA.tensorfuncs import MLTensorOps as MLTO
 
 alias E: Float32 = 2.71828174591064453125
 
 ########################################################################################################
 # defines function for sum used in softmax
 @always_inline
-fn smsum(vec: MLVec, temp: Float32) -> Float32:
+fn smsum(vec: MLT, temp: Float32) -> Float32:
   var val: Float32 = 0
-  for j in range(len(vec)):
+  for j in range(vec.dim(0)):
     val += E ** (temp * vec[j])
   return val
 ########################################################################################################
@@ -16,7 +19,7 @@ fn smsum(vec: MLVec, temp: Float32) -> Float32:
 struct Activation:
   ########################################################################################################
   alias activation_fn = fn(borrowed x: Float32, borrowed a: Float32) -> Float32
-  alias vec_activation_fn = fn(borrowed x: MLVec, borrowed a: Float32) raises escaping-> MLVec
+  alias vec_activation_fn = fn(borrowed x: MLT, borrowed a: Float32) raises escaping-> MLT
   ########################################################################################################
   alias RELU: Int16 = 0
   alias LEAKYRELU: Int16 = 1
@@ -33,25 +36,25 @@ struct Activation:
   fn float_relu(borrowed x: Float32, borrowed a: Float32 = 1) -> Float32:
     return x if x > 0 else 0
 
-  alias relu = MLVec.vector_applicable[f32](Self.float_relu)
+  alias relu = MLVO.vector_applicable(Self.float_relu)
 
   @staticmethod
   @always_inline
   fn float_relu_prime(borrowed x: Float32, borrowed a: Float32 = 1) -> Float32:
     return 1 if x > 0 else 0
 
-  alias relu_prime = MLVec.vector_applicable[f32](Self.float_relu_prime)
+  alias relu_prime = MLVO.vector_applicable(Self.float_relu_prime)
   ########################################################################################################
 
   ########################################################################################################
   # defines softmax activation function
   @staticmethod
   @always_inline
-  fn softmax(borrowed x: MLVec, borrowed a: Float32 = 1) raises escaping -> MLVec:
-    var val = MLVec()
-    let sum = smsum(x, a)
-    for i in range(len(x)):
-      val.append(
+  fn softmax(borrowed x: MLT, borrowed a: Float32 = 1) raises escaping -> MLT:
+    var val = MLT()
+    var sum = smsum(x, a)
+    for i in range(x.dim(0)):
+      MLVO.append(val, 
       E ** (a * x[i]) / sum
       )
 
@@ -59,8 +62,9 @@ struct Activation:
 
   @staticmethod
   @always_inline
-  fn softmax_prime(borrowed x: MLVec, borrowed a: Float32 = 1) raises escaping-> MLVec:
-    pass
+  fn softmax_prime(borrowed x: MLT, borrowed a: Float32 = 1) raises escaping-> MLT:
+    var val = MLT()
+    return val
 
   ########################################################################################################
 
@@ -71,14 +75,14 @@ struct Activation:
   fn float_tanh(borrowed x: Float32, borrowed a: Float32 = 1) -> Float32:
     return (E**x-E**(-x))/(E**x+E**(-x))
 
-  alias tanh = MLVec.vector_applicable[f32](Self.float_tanh)
+  alias tanh = MLVO.vector_applicable(Self.float_tanh)
 
   @staticmethod
   @always_inline
   fn float_tanh_prime(borrowed x: Float32, borrowed a: Float32 = 1) -> Float32:
     return 1-(Self.float_tanh(x)**2)
 
-  alias tanh_prime = MLVec.vector_applicable[f32](Self.float_tanh_prime)
+  alias tanh_prime = MLVO.vector_applicable(Self.float_tanh_prime)
 
   ########################################################################################################
 
@@ -89,14 +93,14 @@ struct Activation:
   fn float_leakyrelu(borrowed x: Float32, borrowed a: Float32 = 1) -> Float32:
     return x if x > 0 else a*x
 
-  alias leakyrelu = MLVec.vector_applicable[f32](Self.float_leakyrelu)
+  alias leakyrelu = MLVO.vector_applicable(Self.float_leakyrelu)
 
   @staticmethod
   @always_inline
   fn float_leakyrelu_prime(borrowed x: Float32, borrowed a: Float32 = 1) -> Float32:
     return 1 if x > 0 else a
 
-  alias leakyrelu_prime = MLVec.vector_applicable[f32](Self.float_leakyrelu_prime)
+  alias leakyrelu_prime = MLVO.vector_applicable(Self.float_leakyrelu_prime)
 
   ########################################################################################################
 
@@ -107,14 +111,14 @@ struct Activation:
   fn float_elu(borrowed x: Float32, borrowed a: Float32 = 1) -> Float32:
     return x if x > 0 else a*(E**x-1)
 
-  alias elu = MLVec.vector_applicable[f32](Self.float_elu)
+  alias elu = MLVO.vector_applicable(Self.float_elu)
 
   @staticmethod
   @always_inline
   fn float_elu_prime(borrowed x: Float32, borrowed a: Float32 = 1) -> Float32:
     return 1 if x > 0 else a*(E**x)
 
-  alias elu_prime = MLVec.vector_applicable[f32](Self.float_elu_prime)
+  alias elu_prime = MLVO.vector_applicable(Self.float_elu_prime)
 
   ########################################################################################################
 
@@ -125,20 +129,20 @@ struct Activation:
   fn float_sigmoid(borrowed x: Float32,borrowed a: Float32 = 1) -> Float32:
     return 1/(1+E**(-x))
 
-  alias sigmoid = MLVec.vector_applicable[f32](Self.float_sigmoid)
+  alias sigmoid = MLVO.vector_applicable(Self.float_sigmoid)
 
   @staticmethod
   @always_inline
   fn float_sigmoid_prime(borrowed x: Float32, a: Float32 = 1) -> Float32:
     return (1-Self.float_sigmoid(x))*Self.float_sigmoid(x)
 
-  alias sigmoid_prime = MLVec.vector_applicable[f32](Self.float_sigmoid_prime)
+  alias sigmoid_prime = MLVO.vector_applicable(Self.float_sigmoid_prime)
 
   ########################################################################################################
 
   @staticmethod
   @always_inline
-  fn evaluate(activation: Int16, x: MLVec, a: Float32 = 1) raises -> MLVec:
+  fn evaluate(activation: Int16, x: MLT, a: Float32 = 1) raises -> MLT:
     if activation == Self.RELU:
       return Self.relu(x, a)
     elif activation == Self.LEAKYRELU:
@@ -151,10 +155,11 @@ struct Activation:
       return Self.softmax(x, a)
     elif activation == Self.TANH:
       return Self.tanh(x, a)
+    return x
 
   @staticmethod
   @always_inline
-  fn prime_evaluate(activation: Int16, x: MLVec, a: Float32 = 1) raises -> MLVec:
+  fn prime_evaluate(activation: Int16, x: MLT, a: Float32 = 1) raises -> MLT:
     if activation == Self.RELU:
       return Self.relu_prime(x, a)
     elif activation == Self.LEAKYRELU:
@@ -167,3 +172,4 @@ struct Activation:
       return Self.softmax_prime(x, a)
     elif activation == Self.TANH:
       return Self.tanh_prime(x, a)
+    return x

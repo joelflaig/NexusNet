@@ -1,6 +1,9 @@
 # defines layer trait and structs conforming to it
 from .funcs import Activation as act
-from .datastruct import MLVec, MLMatrix, MLT3D, TensorWrapper, MDTensorWrapper
+from .DSA import *
+from .DSA.tensorfuncs import MLTensorOps as MLTO
+from random import randn
+from tensor import TensorShape
 
 # Layer trait
 trait Layer():
@@ -10,44 +13,39 @@ trait Layer():
   pass
 
 
-struct Flatten2D(Layer):
-  '''Currently a unified `Flatten` layer is not possible, due to the fact that mojo does not support parametrized traits.'''
-
-  fn eval(inout self, inout input: MLMatrix, a: Float32 = 0) raises -> MLVec:
-    return input.flatten()
-
-
-struct Flatten3D(Layer):
-  '''Currently a unified `Flatten` layer is not possible, due to the fact that mojo does not support parametrized traits.'''
-
-  fn eval(inout self, inout input: MLT3D, a: Float32 = 0) raises -> MLVec:
-    return input.flatten()
+struct Flatten(Layer):
+  @always_inline
+  fn eval(inout self, inout input: MLT, a: Float32 = 0) raises -> MLT:
+    return MLTO.flatten(input)
 
 
 struct Activation[func: Int16](Layer):
   
-  var input: MLVec
+  var input: MLT
   
   fn __init__(inout self) raises:
-    self.input = MLVec()
+    self.input = MLT()
 
-  fn eval(inout self, input: MLVec, a: Float32 = 0) raises -> MLVec:
+  @always_inline
+  fn eval(inout self, input: MLT, a: Float32 = 0) raises -> MLT:
     return act.evaluate(func, input, a)
 
 
 struct Dense(Layer):
 
-  var input: MLVec
+  var input: MLT
   var neurons: Int 
-  var weights: MLMatrix
-  var biases: MLVec
+  var weights: MLT
+  var biases: MLT
 
-  fn __init__(inout self, neurons: Int) raises:
+  fn __init__(inout self, neurons: Int, input_size: Int, rand_init_mean: Float64=0.5, rand_init_variance: Float64=0.5) raises:
 
-    self.input = MLVec()    
+    self.input = MLT(input_size)
     self.neurons = neurons
-    self.weights = MLMatrix(); self.weights.random_matrix(neurons, 0)
-    self.biases = MLVec(); self.biases.random_vector(neurons)
+    self.weights = MLT()
+    self.weights = randn[f32](TensorShape(neurons, input_size), rand_init_mean, rand_init_variance)
+    self.biases = MLT()
+    self.biases = randn[f32](TensorShape(neurons), rand_init_mean, rand_init_variance)
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.input = other.input
@@ -61,25 +59,28 @@ struct Dense(Layer):
     self.weights = other.weights
     self.biases = other.biases
 
-  fn eval(inout self, input: MLVec, a: Float32 = 0) raises -> MLVec:
+  fn eval(inout self, input: MLT, a: Float32 = 0) raises -> MLT:
+    if input.spec() != self.input.spec():
+      raise Error("Size of input does not match input size at initialization.")
+
     self.input = input
     return self.biases + (input * self.weights)
 
-  fn fit(inout self, out_gradient: MLVec, learning_rate: Float32) raises -> MLVec:
-    return MLVec()
+  fn fit(inout self, out_gradient: MLT, learning_rate: Float32) raises -> MLT:
+    return MLT()
 
 
 struct Conv2D(Layer):
 
   var features: Int 
-  var kernels: MLT3D
-  var biases: MLT3D
+  var kernels: MLT
+  var biases: MLT
 
   fn __init__(inout self, features: Int, owned prec_layer: Layer, act: Int16) raises:
     
     self.features = features
-    self.kernels = MLT3D(); # self.kernels.random_tensor3d(features, 0)
-    self.biases = MLT3D(); # self.biases.random_tensor3D(features)
+    self.kernels = MLT(); # self.kernels.random_tensor3d(features, 0)
+    self.biases = MLT(); # self.biases.random_tensor3D(features)
 
   fn __copyinit__(inout self, borrowed other: Self):
     self.features = other.features
@@ -91,5 +92,5 @@ struct Conv2D(Layer):
     self.kernels = other.kernels
     self.biases = other.biases
 
-  fn eval(inout self, input: TensorWrapper, a: Float32 = 0) raises:
+  fn eval(inout self, input: MLT, a: Float32 = 0) raises:
     pass

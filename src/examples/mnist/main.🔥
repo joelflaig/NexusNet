@@ -1,13 +1,12 @@
 from Neural.model import Sequential
-from Neural.activations import softmax, relu, sigmoid
 from Neural.layers import Dense
 
 fn main() raises:
   var model = Sequential(
     (
-      Dense(784, relu), 
-      Dense(16, relu),
-      Dense(16, relu),
-      Dense(10, relu)
+      Dense(784, 748), 
+      Dense(16, 748),
+      Dense(16, 16),
+      Dense(10, 16)
     )
   )

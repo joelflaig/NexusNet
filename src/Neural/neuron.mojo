@@ -1,7 +1,7 @@
 # defines the Neuron trait and structs conforming to the Neuron trait
 import .funcs as act
-from .datastruct import MLVec, f32
-from random import rand
+from .DSA import *
+from random import rand, randn
 
 '''
 This module is intended for use
@@ -38,25 +38,25 @@ struct Cell(Neuron):
   by own custom structs.
   '''
 
-  var input: MLVec
-  var weights: MLVec
+  var input: MLT
+  var weights: MLT
   var bias: Float32
   var value: Float32
-  var activation: act.activation_fn
+  var activation: Int16
 
   fn  __init__(inout self) raises:
     self.value = 0
-    self.input = MLVec()
-    self.activation = act.float_relu
-    self.weights = MLVec()
+    self.input = MLT()
+    self.activation = act.Activation.RELU
+    self.weights = MLT()
     self.bias = 0
 
 
-  fn __init__(inout self, input: MLVec, activation: act.activation_fn) raises:
+  fn __init__(inout self, input: MLT, activation: Int16) raises:
     self.value = 0
     self.input = input
     self.activation = activation
-    self.weights = MLVec(); self.weights.random_vector(len(input))
+    self.weights = MLT(); self.weights = randn[f32](TensorShape(1))
     self.bias = rand[f32](1)[0]
   
   fn __moveinit__(inout self, owned other: Self):
@@ -74,4 +74,4 @@ struct Cell(Neuron):
     self.activation = other.activation
 
   fn eval(inout self, a: Float32 = 1) raises:
-    self.value = self.activation(self.input * self.weights + self.bias, a)
+    self.value = act.Activation.evaluate(self.activation, self.input * self.weights + self.bias, a)[0]
