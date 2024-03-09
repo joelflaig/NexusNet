@@ -1,7 +1,7 @@
 <div align="center">
     <img src="NexusNet.gif" alt="Logo" width="250" height="250">
 
-  <h3 align="center">Nexus</h3>
+  <h3 align="center">NexusNet</h3>
 </div>   
 
 ## Overview
