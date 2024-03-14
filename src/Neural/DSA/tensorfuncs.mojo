@@ -23,6 +23,8 @@ struct TensorOps[type: DType]:
     for i in range(vec_a.num_elements()):
       val[i] = vec_a[i] * vec_b[i]
 
+    val = val.reshape(a.shape())
+
     return val
 
   @staticmethod
