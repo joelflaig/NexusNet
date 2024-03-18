@@ -1,14 +1,13 @@
+'''
+This module is intended for use
+in evolutionary simulations,
+similiar to, for example [biosim4](https://github.com/davidrmiller/biosim4).
+'''
 # defines the Neuron trait and structs conforming to the Neuron trait
 import .funcs as act
 from .DSA import *
 from random import rand, randn
 
-'''
-This module is intended for use
-in evolutionary simulations,
-for example biosim4 
-(https://github.com/davidrmiller/biosim4)
-'''
 
 # Neuron trait
 trait Neuron(CollectionElement):

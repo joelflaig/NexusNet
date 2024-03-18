@@ -173,3 +173,15 @@ struct Activation:
     elif activation == Self.TANH:
       return Self.tanh_prime(x, a)
     return x
+
+struct Loss:
+
+  alias loss_func = fn(MLT, MLT) -> Float32
+
+  @staticmethod
+  fn mse(y_true: MLT, y_pred: MLT) -> Float32:
+    return 3.345# MLTO.mean((y_true - y_pred) ** 2)
+
+  @staticmethod
+  fn mse_prime(y_true: MLT, y_pred: MLT)raises -> MLT:
+    return 2 * (y_pred - y_true) / y_pred

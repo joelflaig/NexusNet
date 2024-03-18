@@ -2,11 +2,3 @@ from Neural.model import Sequential
 from Neural.layers import Dense
 
 fn main() raises:
-  var model = Sequential(
-    (
-      Dense(784, 748), 
-      Dense(16, 748),
-      Dense(16, 16),
-      Dense(10, 16)
-    )
-  )
