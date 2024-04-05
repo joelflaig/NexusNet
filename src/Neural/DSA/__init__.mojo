@@ -2,6 +2,7 @@
 
 from .tensorfuncs import *
 from .array import *
+from tensor import Tensor
 
 alias bool = DType.bool
 '''

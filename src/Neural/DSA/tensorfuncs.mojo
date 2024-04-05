@@ -4,6 +4,7 @@ Provides functions for working with `Tensor` values.
 
 from tensor import TensorShape
 from .array import DTypeArray
+from tensor import Tensor
 
 struct TensorOps[type: DType]:
   '''
@@ -73,7 +74,8 @@ struct VectorOps[type: DType]:
         vec.shape().num_elements()+1
         )
       )
-    vec.simd_store(-1, data)
+
+    vec.store[1](vec.shape().num_elements(), data)
 
   @staticmethod
   fn sum(vec: Tensor[type]) -> SIMD[type,1]:
@@ -119,10 +121,10 @@ struct MatrixOps[type: DType]:
       for i in range(matrix.dim(0)):
         for j in range(matrix.dim(1)):
           
-          val.simd_store[1](
+          val.store[1](
             VariadicList(i, j), 
             func(
-              matrix.simd_load[1](i, j), a
+              matrix.load(i, j), a
               )
             )
 
