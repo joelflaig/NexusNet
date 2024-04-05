@@ -1,8 +1,9 @@
 # defines activation functions and a few aliases
-from .DSA import *
+from .DSA import MLT
 from .DSA.tensorfuncs import MLVecOps as MLVO
 from .DSA.tensorfuncs import MLMatrixOps as MLMO
 from .DSA.tensorfuncs import MLTensorOps as MLTO
+from tensor import Tensor
 
 alias E: Float32 = 2.71828174591064453125
 
@@ -10,13 +11,16 @@ alias E: Float32 = 2.71828174591064453125
 # defines function for sum used in softmax
 @always_inline
 fn smsum(vec: MLT, temp: Float32) -> Float32:
+  
   var val: Float32 = 0
+
   for j in range(vec.dim(0)):
     val += E ** (temp * vec[j])
+  
   return val
 ########################################################################################################
 
-struct Activation:
+struct Activations:
   ########################################################################################################
   alias activation_fn = fn(borrowed x: Float32, borrowed a: Float32) -> Float32
   alias vec_activation_fn = fn(borrowed x: MLT, borrowed a: Float32) raises escaping-> MLT
@@ -54,8 +58,10 @@ struct Activation:
     var val = MLT()
     var sum = smsum(x, a)
     for i in range(x.dim(0)):
-      MLVO.append(val, 
-      E ** (a * x[i]) / sum
+
+      MLVO.append(
+        val,
+        E ** (a * x[i]) / sum
       )
 
     return val

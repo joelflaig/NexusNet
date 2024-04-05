@@ -1,52 +1,63 @@
-'''
-At this time it is not possible to 
-define Models in mojo since it does not have a
-working Array type.
-'''
 # defines structs describing neural network models
 from .layers import Layer, Activation
-from .funcs import Activation as Act
+import .layers as lyrs
+from .funcs import Activations as Act
 from .DSA import Array
+from utils.variant import Variant
 
 trait Model:
-  '''
-  At this time it is not possible to 
-  define Models in mojo since it does not have a
-  working Array type.
-  '''
-  fn eval(inout self):
+
+  fn build(inout self) raises:
     ...
 
-  fn fit(inout self):
+  fn eval(inout self, activation_coefficient: Float32):
     ...
 
-alias ModelStore = Array[Pointer[Layer]]
+  fn fit(inout self, learning_rate: Float32):
+    ...
 
-struct Sequential():
-  '''
-  This struct is not functional. 
-  Use it at your own risk.
-  '''
+struct Sequential[size: Int](Model):
 
-  var lyrs: ModelStore
-  var lyrnum: Int
+  var data: Pointer[Pointer[Layer]]
   var _current: Int
-  var params: Int
 
   fn __init__(inout self):
-    self.lyrs = ModelStore()
-    self.lyrnum = 0
+    self.data = Pointer[Pointer[Layer]]()
+    self.data = self.data.alloc(size)
     self._current = 0
-    self.params = 0
 
-  fn add(inout self, owned lyr: Layer, owned activation: Int16) raises:
-    self.lyrs.append(Pointer[Layer].address_of(lyr))
-    var act = Activation(activation)
-    # self.lyrs.append(Pointer[Layer].address_of(act))
-    self.lyrnum += 1
+  @always_inline
+  fn __iadd__(inout self, owned lyr: Layer) raises:
+    '''
+    Adds a `Layer` value at runtime (`Layer` value can be of `Activation` type).
+    Function is `@always_inline`.
+    '''
+    self.data[self._current] = Pointer[Layer].address_of(lyr)
+    self._current += 1
+
+  fn add(inout self, owned lyr: Layer) raises:
+    '''
+    Adds a `Layer` value at runtime (`Layer` value can be of `Activation` type).
+    '''
+    self.data[self._current] = Pointer[Layer].address_of(lyr)
+    self._current += 1
+ 
+  # fn add[activation: Int16 = Act.RELU,
+      # activation_coefficient: Float32 = 1
+         # ](inout self, owned lyr: Layer = lyrs.Dense) raises:
+    # '''
+    # Adds a `Layer` and an `Activation` at runtime.
+    # '''
+    # self += lyr
+    ## ain't workin
+    # self += Activation[activation, activation_coefficient]()
+
+  fn build(inout self) raises:
+    pass
 
   fn eval(inout self, activation_coefficient: Float32=1):
     pass
 
   fn fit(inout self, learning_rate: Float32):
     pass
+
