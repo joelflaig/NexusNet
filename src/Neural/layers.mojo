@@ -54,12 +54,12 @@ struct Activation[
 
   @always_inline
   fn eval(self, input: MLT) raises -> MLT:
-    return Act.evaluate(func, input, func_coefficient)
+    return Act.evaluate[func](input, func_coefficient)
 
   # make `a` a field
   @always_inline
   fn fit(self, owned out_gradient: MLT, owned learning_rate: Float32) raises -> MLT:
-    var pe = Act.prime_evaluate(func, self.input, func_coefficient)
+    var pe = Act.prime_evaluate[func](self.input, func_coefficient)
     return MLTO.hadamard(
         out_gradient, 
         pe

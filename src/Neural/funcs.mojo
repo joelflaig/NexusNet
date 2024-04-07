@@ -148,7 +148,9 @@ struct Activations:
 
   @staticmethod
   @always_inline
-  fn evaluate(activation: Int16, x: MLT, a: Float32 = 1) raises -> MLT:
+  fn evaluate[activation: Int16](x: MLT, a: Float32 = 1) raises -> MLT:
+
+    @parameter
     if activation == Self.RELU:
       return Self.relu(x, a)
     elif activation == Self.LEAKYRELU:
@@ -165,7 +167,8 @@ struct Activations:
 
   @staticmethod
   @always_inline
-  fn prime_evaluate(activation: Int16, x: MLT, a: Float32 = 1) raises -> MLT:
+  fn prime_evaluate[activation: Int16](x: MLT, a: Float32 = 1) raises -> MLT:
+    @parameter
     if activation == Self.RELU:
       return Self.relu_prime(x, a)
     elif activation == Self.LEAKYRELU:
