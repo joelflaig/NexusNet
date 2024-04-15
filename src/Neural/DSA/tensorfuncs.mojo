@@ -111,7 +111,7 @@ struct MatrixOps[type: DType]:
   @staticmethod
   fn matrix_applicable(
     func: fn(x: SIMD[type, 1], a: SIMD[type, 1]) -> SIMD[type, 1]
-    ) -> 
+    ) ->
     fn(x: Tensor[type], a: SIMD[type, 1]) raises escaping -> Tensor[type]:
       
     '''Takes a function with a parameter and returns it equivalent for the `Matrix` type.'''
