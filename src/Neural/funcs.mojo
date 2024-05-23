@@ -11,12 +11,12 @@ alias E: Float32 = 2.71828174591064453125
 # defines function for sum used in softmax
 @always_inline
 fn smsum(vec: MLT, temp: Float32) -> Float32:
-  
+
   var val: Float32 = 0
 
   for j in range(vec.dim(0)):
     val += E ** (temp * vec[j])
-  
+
   return val
 ########################################################################################################
 
